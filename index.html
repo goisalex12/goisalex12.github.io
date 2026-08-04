@@ -494,7 +494,7 @@ let pos=0,vel=0,auto=0.5,half=0,dragging=false,lastX=0,dragMoved=false,reelOn=fa
 
 function makeVideoCard(v){const el=document.createElement('div');el.className='reel-card video '+(v.o==='h'?'horz':'vert');
   el.innerHTML=`<div class="imgwrap"><img src="${v.p}" alt="" loading="lazy" decoding="async" draggable="false" onerror="if(this.src.indexOf('img.youtube.com')>-1&&this.src.indexOf('maxresdefault')>-1){this.src=this.src.replace('maxresdefault','mqdefault');}"></div><div class="grad"></div><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>`;
-  el.addEventListener('click',()=>{if(!dragMoved)openPlayer(v);});return el;}
+  el.__v=v;return el;}
 function makePhotoCard(src){const el=document.createElement('div');el.className='reel-card foto';
   el.innerHTML=`<div class="imgwrap"><img src="${src}" alt="" loading="lazy" decoding="async" draggable="false"></div><div class="grad"></div>`;return el;}
 
@@ -579,9 +579,10 @@ modal.addEventListener('click',e=>{if(e.target===modal)closeFolder();});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'){if(fmPlayer.classList.contains('on'))closePlayer();else if(modal.classList.contains('open'))closeFolder();}});
 
 vp.addEventListener('pointerdown',e=>{dragging=true;dragMoved=false;lastX=e.clientX;vel=0;vp.classList.add('drag');vp.setPointerCapture(e.pointerId);});
-vp.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX;lastX=e.clientX;pos+=dx;vel=dx;if(Math.abs(dx)>3)dragMoved=true;});
+vp.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX;lastX=e.clientX;pos+=dx;vel=dx;if(Math.abs(dx)>6)dragMoved=true;});
 function endDrag(){dragging=false;vp.classList.remove('drag');}
-vp.addEventListener('pointerup',endDrag);vp.addEventListener('pointercancel',endDrag);
+vp.addEventListener('pointerup',e=>{endDrag();if(dragMoved)return;const t=document.elementFromPoint(e.clientX,e.clientY);const card=t&&t.closest?t.closest('.reel-card.video'):null;if(card&&card.__v)openPlayer(card.__v);});
+vp.addEventListener('pointercancel',endDrag);
 
 function reelLoop(){
   if(!reelOn)return;requestAnimationFrame(reelLoop);

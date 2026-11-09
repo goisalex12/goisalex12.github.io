@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="robots" content="noindex" />
+<title>Teste de vídeo</title>
+<style>
+  :root{--ink:#0F1215;--cream:#E8D8C9;--blue:#6E86AD}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:Inter,system-ui,Arial,sans-serif;line-height:1.55;padding:28px 20px 60px;max-width:980px;margin:0 auto}
+  h1{font-size:1.6rem;margin-bottom:6px}
+  p.sub{color:rgba(15,18,21,.7);margin-bottom:22px}
+  .box{border:1px solid rgba(15,18,21,.2);border-radius:10px;padding:16px 18px;margin-bottom:16px;background:rgba(255,255,255,.28)}
+  .row{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .tag{font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;min-width:150px}
+  .ok{color:#1d6b3a;font-weight:700}
+  .bad{color:#a11d1d;font-weight:700}
+  .wait{color:rgba(15,18,21,.6)}
+  .players{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:16px}
+  .pl{flex:1 1 260px;max-width:300px}
+  .pl h2{font-size:.95rem;margin-bottom:8px}
+  .frame{width:100%;aspect-ratio:9/16;background:#000;border-radius:8px;overflow:hidden}
+  .frame iframe{width:100%;height:100%;border:0}
+  .st{margin-top:8px;font-size:.92rem;min-height:2.6em}
+  #resumo{background:var(--ink);color:var(--cream);border-radius:10px;padding:18px 20px;font-size:1.02rem}
+  #resumo b{color:#fff}
+  .warn{background:#a11d1d;color:#fff;border-radius:10px;padding:14px 18px;margin-bottom:16px;display:none}
+  small{color:rgba(15,18,21,.65)}
+</style>
+</head>
+<body>
+<h1>Teste de vídeo do YouTube</h1>
+<p class="sub">Esta página compara o vídeo novo com um vídeo que já funciona no seu site. Espere uns 10 segundos, aperte play nos dois quadros e me mande um print da tela inteira.</p>
+
+<div class="warn" id="warnFile"><b>Atenção:</b> você abriu o arquivo direto do computador. Assim o YouTube bloqueia os vídeos de propósito. Abra esta página pelo endereço do site, por exemplo <b>goisalex12.github.io/teste-youtube.html</b>.</div>
+
+<div class="box">
+  <div class="row"><span class="tag">Endereço da página</span><span id="addr"></span></div>
+  <div class="row"><span class="tag">Script do YouTube</span><span id="apiSt" class="wait">carregando...</span></div>
+</div>
+
+<div class="players">
+  <div class="pl">
+    <h2>A · Vídeo novo (oj2k7Oht4ew)</h2>
+    <div class="frame"><div id="pA"></div></div>
+    <div class="st wait" id="stA">aguardando...</div>
+  </div>
+  <div class="pl">
+    <h2>B · Vídeo que já funciona (JQ7WehYO0Fc)</h2>
+    <div class="frame"><div id="pB"></div></div>
+    <div class="st wait" id="stB">aguardando...</div>
+  </div>
+</div>
+
+<div id="resumo">Resumo: ainda testando...</div>
+<p style="margin-top:14px"><small>Se aparecer uma mensagem escrita dentro do quadro preto (por exemplo "Erro 153"), anote o número e me avise.</small></p>
+
+<script>
+const R={api:null,A:{s:'esperando',ready:false,err:null,dur:0},B:{s:'esperando',ready:false,err:null,dur:0}};
+const $=id=>document.getElementById(id);
+$('addr').textContent=location.href.replace(/[?#].*$/,'');
+if(location.protocol==='file:')$('warnFile').style.display='block';
+
+const ERR={2:'o YouTube recusou o pedido (código 2)',5:'erro interno do player (código 5)',100:'o YouTube diz que o vídeo não existe ou está como Privado (código 100)',101:'o dono do vídeo bloqueou a incorporação em outros sites (código 101)',150:'o dono do vídeo bloqueou a incorporação em outros sites (código 150)'};
+const STATE={'-1':'parado, ainda não começou',0:'terminou',1:'tocando',2:'pausado',3:'carregando',5:'pronto, aguardando play'};
+
+function fmt(t){t=Math.max(0,t|0);return (t/60|0)+':'+String(t%60).padStart(2,'0');}
+function show(k){
+  const o=R[k],el=$('st'+k);let txt,cls='wait';
+  if(o.err!==null){txt='<span class="bad">Erro:</span> '+(ERR[o.err]||('código '+o.err));cls='';}
+  else if(o.ready){txt='<span class="ok">Player pronto.</span> '+o.s+(o.dur?(' · duração '+fmt(o.dur)):'');cls='';}
+  else txt=o.s;
+  el.className='st '+cls;el.innerHTML=txt;
+}
+function resumo(final){
+  const A=R.A,B=R.B;let t;
+  if(R.api===false)t='<b>O script do YouTube não carregou.</b> Isso quase sempre é uma extensão de bloqueio (anúncios ou privacidade) ou uma rede que bloqueia o YouTube. Tente em outra aba anônima, sem extensões, ou em outro navegador.';
+  else if(A.err===100)t='<b>O vídeo novo não é encontrado.</b> No YouTube Studio ele provavelmente está como <b>Privado</b>. Troque para <b>Não listado</b>.';
+  else if(A.err===101||A.err===150)t='<b>O vídeo novo está com a incorporação bloqueada.</b> No YouTube Studio, abra o vídeo, clique em "Mostrar mais" e marque <b>Permitir incorporação</b>. Salve e teste de novo.';
+  else if(A.err!==null)t='<b>O vídeo novo deu erro.</b> '+(ERR[A.err]||'')+' Me mande este print.';
+  else if(A.ready&&B.ready)t='<b>Os dois vídeos carregaram.</b> Aperte play nos dois. Se o A tocar aqui, o problema está no site e eu corrijo. Se o A ficar preto e o B tocar, é uma configuração do vídeo novo.';
+  else if(B.ready&&!A.ready&&final)t='<b>O vídeo B carregou, mas o A não respondeu.</b> O problema é do vídeo novo. Se aparecer algum texto de erro dentro do quadro preto do A, me avise o número.';
+  else if(!A.ready&&!B.ready&&final)t='<b>Nenhum dos dois respondeu.</b> O problema está no navegador, na rede ou no endereço da página, e não no vídeo novo.';
+  else t='Testando...';
+  $('resumo').innerHTML='Resumo: '+t;
+}
+
+function mk(id,vid,k){
+  R[k].s='carregando o player...';show(k);
+  new YT.Player(id,{videoId:vid,width:'100%',height:'100%',playerVars:{rel:0,playsinline:1},events:{
+    onReady:e=>{R[k].ready=true;R[k].s='Aperte play no quadro acima.';try{R[k].dur=e.target.getDuration()||0;}catch(_){}show(k);resumo(false);},
+    onStateChange:e=>{R[k].s=STATE[e.data]||('estado '+e.data);try{R[k].dur=e.target.getDuration()||R[k].dur;}catch(_){}show(k);},
+    onError:e=>{R[k].err=e.data;show(k);resumo(true);}
+  }});
+}
+window.onYouTubeIframeAPIReady=function(){R.api=true;$('apiSt').className='ok';$('apiSt').textContent='carregou';mk('pA','oj2k7Oht4ew','A');mk('pB','JQ7WehYO0Fc','B');};
+const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';
+s.onerror=()=>{R.api=false;$('apiSt').className='bad';$('apiSt').textContent='não carregou';resumo(true);};
+document.head.appendChild(s);
+setTimeout(()=>{if(R.api===null){R.api=false;$('apiSt').className='bad';$('apiSt').textContent='não carregou (sem resposta em 8 segundos)';}
+  ['A','B'].forEach(k=>{if(!R[k].ready&&R[k].err===null){R[k].s='sem resposta do player';show(k);}});resumo(true);},9000);
+</script>
+</body>
+</html>

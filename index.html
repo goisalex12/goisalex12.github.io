@@ -124,12 +124,12 @@
   .fm-chip:hover{color:var(--cream);border-color:var(--cream)}
   .fm-chip.active{background:var(--slate);border-color:var(--slate);color:var(--bg)}
   .fm-hint{max-width:var(--maxw);width:100%;margin:26px auto 0;padding:0 clamp(20px,5vw,72px);font-family:'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;color:var(--cream-soft)}
-  .fm-player{position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;padding:clamp(20px,5vw,72px);background:rgba(9,11,14,.6)}
+  .fm-player{position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;padding:clamp(20px,5vw,72px);background:rgba(9,11,14,.99)}
   .fm-player.on{display:flex}
   .fp-frame{width:100%;border-radius:16px;overflow:hidden;background:#000;box-shadow:0 30px 80px -30px rgba(0,0,0,.9)}
   .fp-frame video{width:100%;height:100%;object-fit:contain;background:#000;display:block;accent-color:var(--slate)}
   .yt-wrap{position:relative;width:100%;height:100%;background:#000}
-  #ytmount{position:absolute;inset:0}
+  #ytmount{position:absolute;inset:0;width:100%;height:100%;display:block;border:0}
   #ytmount iframe{width:100%;height:100%;display:block;border:0}
   .yt-hit{position:absolute;inset:0;z-index:2;cursor:pointer}
   .yt-big{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;width:74px;height:74px;border-radius:50%;border:0;background:rgba(75,96,127,.92);display:grid;place-items:center;cursor:pointer;transition:opacity .3s var(--ease);pointer-events:auto}
@@ -546,7 +546,7 @@ function closeFolder(){
   modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
   document.body.classList.remove('locked');if(lenis)lenis.start();reelOn=false;bgPaused=false;
 }
-let ytPlayer=null,ytTimer=null,ytApiReady=false,ytQueue=null,ytWatch=null;
+let ytPlayer=null,ytTimer=null,ytApiReady=false,ytQueue=null,ytWatch=null,ytReady=false;
 (function(){var t=document.createElement('script');t.src='https://www.youtube.com/iframe_api';document.head.appendChild(t);})();
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;if(ytQueue){const q=ytQueue;ytQueue=null;q();}};
 function ytFmt(t){t=Math.max(0,t|0);const m=t/60|0,s=t%60;return m+':'+(s<10?'0':'')+s;}
@@ -556,31 +556,25 @@ function openPlayer(v){
   fmPlayer.classList.add('on');
   const yl=document.getElementById('fpYt');if(yl)yl.href=v.yt?('https://www.youtube.com/watch?v='+v.yt):'#';
   if(!v.yt){fpFrame.innerHTML='<div class="fp-msg">Este vídeo chega em breve.</div>';return;}
-  fpFrame.innerHTML='<div class="yt-wrap"><div id="ytmount"></div><div class="yt-hit" id="ytHit"></div>'
-    +'<button class="yt-big" id="ytBig" aria-label="Play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>'
-    +'<div class="yt-ctl"><button id="ytPlay" aria-label="Play/Pause"><svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button>'
-    +'<div class="yt-bar" id="ytBar"><div class="yt-prog" id="ytProg"></div></div><span class="yt-time" id="ytTime">0:00</span></div>'
-    +'<div class="yt-end" id="ytEnd"><button class="yt-replay" id="ytReplay"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>Assistir de novo</button></div>'
-    +'<div class="yt-err" id="ytErr"></div></div>';
+  /* sem camadas por cima do vídeo: no celular o play só vale se o toque for direto no player do YouTube */
+  fpFrame.innerHTML='<div class="yt-wrap"><div id="ytmount"></div><div class="yt-err" id="ytErr"></div></div>';
   const boot=()=>buildYT(v.yt,v.p,v.clean);
   if(ytApiReady)boot();else ytQueue=boot;
-  /* se em 7s o player não der sinal de vida (tela preta, 0:00), oferece abrir direto no YouTube */
-  clearTimeout(ytWatch);
-  ytWatch=setTimeout(()=>{
-    if(!fmPlayer.classList.contains('on'))return;
-    let ok=false;try{ok=!!(ytPlayer&&ytPlayer.getDuration&&ytPlayer.getDuration()>0);}catch(_){}
-    if(ok)return;
-    const er=document.getElementById('ytErr');
-    if(er&&!er.classList.contains('on')){er.innerHTML='Este vídeo está demorando pra abrir aqui.<br><small>Você pode assistir direto no YouTube.</small><a href="https://www.youtube.com/watch?v='+v.yt+'" target="_blank" rel="noopener">Assistir no YouTube</a>';er.classList.add('on');}
-  },7000);
+  /* se em 4s o player personalizado não ficar pronto, troca pelo player normal do YouTube */
+  ytReady=false;clearTimeout(ytWatch);
+  ytWatch=setTimeout(()=>{if(!fmPlayer.classList.contains('on')||ytReady)return;nativeEmbed(v);},4000);
+}
+function nativeEmbed(v){
+  stopYT();if(ytPlayer&&ytPlayer.destroy){try{ytPlayer.destroy();}catch(_){}}ytPlayer=null;ytQueue=null;
+  fpFrame.innerHTML='<iframe src="https://www.youtube.com/embed/'+v.yt+'?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="Vídeo" allow="autoplay; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" style="width:100%;height:100%;border:0;display:block;background:#000"></iframe>';
 }
 function buildYT(id,poster,clean){
   const endEl=document.getElementById('ytEnd');if(endEl&&clean)endEl.classList.add('clean');
   if(endEl&&poster)endEl.style.backgroundImage='url("'+poster.replace('maxresdefault','hqdefault')+'")';
-  ytPlayer=new YT.Player('ytmount',{videoId:id,
-    playerVars:{autoplay:1,controls:0,modestbranding:1,rel:0,playsinline:1,iv_load_policy:3,fs:0,disablekb:1},
-    events:{onReady:e=>{try{e.target.playVideo();}catch(_){}startYT();},
-      onError:e=>{const er=document.getElementById('ytErr');if(er){er.innerHTML='Não consegui carregar este vídeo aqui.<br><small>Você pode assistir direto no YouTube.</small><a href="https://www.youtube.com/watch?v='+id+'" target="_blank" rel="noopener">Assistir no YouTube</a>';er.classList.add('on');}stopYT();},
+  ytPlayer=new YT.Player('ytmount',{videoId:id,width:'100%',height:'100%',
+    playerVars:{autoplay:1,controls:1,modestbranding:1,rel:0,playsinline:1,iv_load_policy:3,fs:1},
+    events:{onReady:e=>{ytReady=true;try{e.target.playVideo();}catch(_){}startYT();},
+      onError:e=>{ytReady=true;const er=document.getElementById('ytErr');if(er){er.innerHTML='Não consegui carregar este vídeo aqui.<br><small>Você pode assistir direto no YouTube.</small><a href="https://www.youtube.com/watch?v='+id+'" target="_blank" rel="noopener">Assistir no YouTube</a>';er.classList.add('on');}stopYT();},
       onStateChange:e=>{ytIcon(e.data===YT.PlayerState.PLAYING);
         const ee=document.getElementById('ytEnd');
         if(e.data===YT.PlayerState.ENDED){if(ee)ee.classList.add('on');stopYT();}

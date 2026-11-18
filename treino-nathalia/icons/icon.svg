@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+ <rect width="512" height="512" rx="112.64" fill="#161616"/>
+ <circle cx="256" cy="256" r="153.6" fill="none" stroke="#6B0C58" stroke-width="38.4"/>
+ <circle cx="256" cy="256" r="153.6" fill="none" stroke="#FB1378" stroke-width="38.4" stroke-linecap="round"
+   stroke-dasharray="723.8229473870883 965.0972631827844" transform="rotate(-90 256 256)"/>
+ <text x="256" y="309.76" text-anchor="middle" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-weight="800" font-size="153.6" fill="#FCA019">N</text>
+</svg>

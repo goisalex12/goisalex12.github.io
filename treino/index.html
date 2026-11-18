@@ -168,6 +168,16 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-rad
 .tb th,.tb td{padding:7px 4px;border-bottom:1px solid rgba(255,255,255,.1);text-align:right}
 .tb th:first-child,.tb td:first-child{text-align:left}
 .tb th{color:var(--mute);font-weight:600}
+.per.run{color:var(--or)}.per.run svg{width:16px;height:16px}
+.cdio .lk{display:block;margin-top:10px;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px;color:inherit}
+.rc.today-run{background:var(--steel);color:var(--cream)}
+.rc.today-run small{font-size:12px;opacity:.8}.rc.today-run h3{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:4px 0 2px}
+.rc.today-run>p{font-size:13px;opacity:.85}
+.rc.today-run .start{width:100%;margin-top:14px}.rc.today-run .nt{color:rgba(232,216,201,.82)}
+.rc.today-run.off{background:var(--card);color:var(--ink)}
+.st{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(232,216,201,.15);font-size:14px}
+.st b{width:26px;height:26px;border-radius:50%;background:var(--or);color:#1a1a1a;display:grid;place-items:center;font-size:13px}
+.st em{font-style:normal;font-weight:800}
 .fade{animation:f .35s ease}@keyframes f{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.fade{animation:none}}
 </style>
@@ -177,16 +187,24 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-rad
 <nav class="nav" id="nav"></nav>
 <script>
 
-var CORE = {tag:"Core diário", kind:"core", title:"Abdômen · 3 exercícios", rest:"Descanso: 30 seg", items:[
-  ["Roda abdominal de joelhos (amplitude curta)","2×8"],["Elevação de joelhos na cadeira romana ou na barra","2×12"],["Abdominal reverso no banco inclinado","2×15"]],
-  note:"Intensidade baixa, porque o core é diário: pare sempre com 2 ou 3 repetições sobrando. Movimentos lentos, sem balançar o corpo e sem puxar com o pescoço. Para o abdômen aparecer, o que mais pesa é o cardio e a dieta."};
+var CORE_A = {tag:"Core A · com carga", kind:"core", title:"Abdômen com carga · 3 exercícios", rest:"Descanso: 45 seg", items:[
+  ["Abdominal na polia, ajoelhado","3×12"],["Elevação de pernas na barra ou na cadeira romana","3×10"],["Roda abdominal de joelhos","3×8"]],
+  note:"Abdômen cresce como os outros músculos: com movimento e carga que sobe aos poucos. Na polia, enrole a coluna levando o peito em direção ao quadril, sem puxar com os braços. Quando fechar as 12 repetições em todas as séries, suba o peso. Pare com 1 ou 2 repetições sobrando."};
+var CORE_B = {tag:"Core B · parte de baixo e lateral", kind:"core", title:"Parte de baixo e lateral · 3 exercícios", rest:"Descanso: 45 seg", items:[
+  ["Canivete na bola suíça","3×10"],["Abdominal reverso no banco inclinado","3×12"],["Pallof press na polia","3×10/"]],
+  note:"O canivete foi o que mais ativou a parte de baixo do abdômen e os oblíquos nos estudos. Sem bola suíça, faça elevação de pernas na barra. O Pallof treina o tronco a não girar: firma a cintura sem engrossar."};
+var CORE_C = {tag:"Core C · leve", kind:"core", title:"Core leve · 3 exercícios", rest:"Descanso: 30 seg", items:[
+  ["Dead bug","2×8/"],["Prancha com toque no ombro","2×10/"],["Vácuo abdominal","3×20 seg"]],
+  note:"Dia leve, para o abdômen se recuperar. No vácuo, solte todo o ar e puxe o umbigo para dentro e para cima."};
+var POS_RUN = {tag:"Depois da corrida", kind:"warm", title:"Panturrilha e sola do pé · 3 min", rest:"Sem descanso", items:[
+  ["Alongamento de panturrilha na parede","2×30 seg/"],["Rolar a sola do pé numa bolinha","1 min/"]], note:"Cuida do calcanhar depois de correr, por causa do esporão."};
 var UP_WARM = {tag:"Aquecimento", kind:"warm", title:"Pré treino de superiores · 3 min", rest:"Sem descanso", items:[
   ["Rotação de ombro com elástico","2×10"],["Abertura escapular com elástico","2×12"],["Flexão escapular","2×10"]]};
 var LOW_WARM = function(extra){ return {tag:"Aquecimento", kind:"warm", title:"Pré treino de pernas · 3 min", rest:"Sem descanso", items:[["Mobilidade de quadril e tornozelo","1 min"],[extra[0],extra[1]]]}; };
 
 function z2(eq, min, nota){ return {tag:"Cardio zona 2", kind:"cardio", title:eq+" em ritmo de conversa", rest:min+" min", items:[[eq,min+" min"]], note:nota||"Consegue falar frases curtas sem ofegar."}; }
 function hiit(eq, min, nota){ return {tag:"Cardio intervalado", kind:"cardio", title:eq+": 30 seg forte, 30 seg leve", rest:min+" min", items:[[eq+" (ciclos de 30+30)",min+" min"]], note:nota||"Nos 30 seg fortes, vá o mais rápido que conseguir, mantendo a postura."}; }
-var N_ESTEIRA = "Hoje é só caminhada, sem correr: a corrida fica nos dias 2, 4 e 7. Inclinação de 8 a 12% e velocidade de 5 a 6 km/h. Pise com o pé todo no chão.";
+var N_ESTEIRA = "Hoje é só caminhada, sem correr: a corrida fica na segunda, quarta, sexta e domingo. Inclinação de 8 a 12% e velocidade de 5 a 6 km/h. Pise com o pé todo no chão.";
 var N_CAM = "Somente caminhada. Inclinação de 8 a 12% e velocidade de 5 a 6 km/h. Pise com o pé todo no chão.";
 function mob(tag, title, items){ return {tag:tag||"Mobilidade", kind:"mob", title:title, rest:"Descanso: 20 seg", items:items}; }
 var MOB_OMBRO = mob("", "Ombro e coluna · 5 min", [["Rotação torácica no solo","2×10/"],["Slide de parede","2×12"]]);
@@ -199,8 +217,8 @@ function trio(title, items, rest, nota){ return {tag:"3 exercícios seguidos", k
 var DROP = "Na última série, reduza uns 30% do peso e continue até não conseguir mais.";
 
 var PLAN = [
- {n:1, c:"#60a5fa", title:"Peito · Ombro · Tríceps", meta:"Manhã 35 min · Noite 70 min", periods:[
-  {name:"☀ MANHÃ", what:"30 min de escada em ritmo moderado e 5 min de mobilidade.", blocks:[z2("Escada",30,"Ritmo constante, em que ainda dá para falar frases curtas. Não apoie o peso nas mãos e pise com o pé todo. Se o calcanhar incomodar, troque pela esteira inclinada."), MOB_OMBRO]},
+ {n:1, c:"#60a5fa", title:"Peito · Ombro · Tríceps", meta:"Corrida 35 min · Noite 70 min", periods:[
+  {name:"CORRIDA", label:"Corrida", run:true, what:"Corrida leve na rua, cuidado com o calcanhar e mobilidade de ombro.", blocks:[{tag:"Corrida", kind:"cardio", run:"B", rua:true, title:"Corrida", rest:"", items:[["",""]]}, POS_RUN, MOB_OMBRO]},
   {name:"🌙 NOITE", what:"Musculação de peito, tríceps e um bloco de ombro.", blocks:[
    UP_WARM,
    principal("Supino reto com barra", [["Supino reto com barra","5×5"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando e desça contando 3 segundos. Peça ajuda se a carga for alta."),
@@ -208,35 +226,38 @@ var PLAN = [
    {tag:"Exercício", kind:"work", title:"Voador (peck deck)", rest:"Descanso: 60 seg", items:[["Voador (peck deck)","3×12"]], note:"Aperte o peito no centro e segure 1 seg. Na última série, reduza uns 30% do peso e continue até não conseguir mais."},
    par("Ombro", [["Desenvolvimento com halteres sentado","3×8"],["Elevação lateral sentado com halteres","3×15"]], 60, "Na última série da elevação lateral, reduza uns 30% do peso e continue até não conseguir mais. Não balance o corpo."),
    par("Tríceps", [["Tríceps polia corda","3×12"],["Tríceps francês","3×10"]], 60),
-   CORE]}
+   CORE_A]}
  ]},
- {n:2, c:"#4ade80", title:"Pernas · Quadríceps", meta:"Manhã 40 min · Noite 62 min", periods:[
-  {name:"☀ MANHÃ", what:"Corrida leve da semana (veja a aba Corrida) e 8 min de mobilidade de quadril. O treino de pernas fica para a noite.", blocks:[{tag:"Corrida", kind:"cardio", run:"B", title:"Corrida", rest:"", items:[["",""]]}, MOB_QUADRIL]},
+ {n:2, c:"#4ade80", title:"Pernas · Quadríceps", meta:"Corrida 40 min · Noite 62 min", periods:[
+  {name:"CORRIDA", label:"Corrida", run:true, what:"Corrida de ritmo, a mais curta da semana, e mobilidade de quadril. As pernas treinam só à noite.", blocks:[{tag:"Corrida", kind:"cardio", run:"A", title:"Corrida", rest:"", items:[["",""]]}, POS_RUN, MOB_QUADRIL]},
   {name:"🌙 NOITE", what:"Musculação de pernas, com foco em quadríceps. Não deixe o calcanhar bater no chão.", blocks:[
    LOW_WARM(["Agachamento sem peso","2×15"]),
    principal("Agachamento livre", [["Agachamento livre com barra","5×5"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando e desça contando 3 segundos, só até onde o calcanhar fique firme no chão."),
    piramide("Hack squat ou leg press 45", [["Hack squat ou leg press 45","12 · 10 · 8"]], "Com os pés mais baixos na plataforma, o quadríceps trabalha mais. A cada série, suba o peso."),
    par("Quadríceps", [["Cadeira extensora (segure 2 seg no topo)","3×12"],["Afundo com halteres (pé na ponta, calcanhar não bate)","3×10/"]], 60, "Na última série da extensora, reduza uns 30% do peso e continue até não conseguir mais."),
    par("Posterior e panturrilha", [["Cadeira flexora","3×12"],["Panturrilha sentado","3×20"]], 60),
-   CORE]}
+   CORE_B]}
  ]},
  {n:3, c:"#8AA6CE", title:"Descanso", meta:"Caminhada 30 min · Mobilidade 10 min", periods:[
   {name:"DESCANSO", label:"Descanso", icon:"rest", what:"Sem musculação. O músculo se recupera e cresce hoje. Sem corrida também. Faça a caminhada leve, a mobilidade e o core.", blocks:[
    z2("Esteira inclinada leve",30,N_ESTEIRA+" Ritmo bem leve, só para ativar a circulação."),
    mob("Mobilidade", "Mobilidade leve · 10 min", [["Gato e camelo","2×10"],["Rotação de quadril 90/90","2×8/"],["Rotação torácica no solo","2×10/"],["Alongamento do flexor de quadril","2×30 seg/"]]),
-   CORE]}
+   CORE_C]}
  ]},
- {n:4, c:"#fb923c", title:"Costas · Bíceps · Antebraço", meta:"Manhã 40 min · Noite 50 min", periods:[
-  {name:"☀ MANHÃ", what:"Corrida da semana (veja a aba Corrida) e 5 min de mobilidade de coluna.", blocks:[
-   {tag:"Corrida", kind:"cardio", run:"A", title:"Corrida", rest:"", items:[["",""]]},
+ {n:4, c:"#fb923c", title:"Costas · Bíceps · Antebraço", meta:"Corrida 45 min · Noite 65 min", periods:[
+  {name:"CORRIDA", label:"Corrida", run:true, what:"Corrida longa da semana: a perna está descansada depois da terça. Cuidado com o calcanhar e mobilidade de coluna.", blocks:[
+   {tag:"Corrida", kind:"cardio", run:"C", title:"Corrida", rest:"", items:[["",""]]},
+   POS_RUN,
    MOB_COLUNA]},
-  {name:"🌙 NOITE", what:"Musculação de costas e bíceps, direto ao ponto.", blocks:[
+  {name:"🌙 NOITE", what:"Costas largas e a parte de cima aberta, bíceps e antebraço.", blocks:[
    UP_WARM,
    principal("Puxador alto pegada aberta", [["Puxador alto pegada aberta","5×6"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando. Puxe os cotovelos em direção ao bolso, sem balançar o corpo, e volte contando 3 segundos."),
-   piramide("Remada cavalinho ou máquina", [["Remada cavalinho ou máquina","10 · 8 · 6"]], "Com o peito apoiado, a lombar descansa para o treino de perna do dia seguinte. A cada série, suba o peso."),
-   par("Largura das costas e ombro de trás", [["Pulldown de braço reto na polia","3×12"],["Crucifixo inverso","3×15"]], 45, "O pulldown de braço reto trabalha só o dorsal, que dá a largura em V. Sem balançar o corpo."),
-   par("Bíceps e antebraço", [["Rosca direta barra W","3×8"],["Rosca martelo junto","3×12"]], 45, "A rosca martelo já pega o antebraço. Na última série da W, reduza uns 30% do peso e continue até não conseguir mais."),
-   CORE]}
+   {tag:"Exercício", kind:"work", title:"Remada baixa pegada aberta", rest:"Descanso: 90 seg", items:[["Remada baixa pegada aberta (barra reta longa)","4×10"]], note:"Abre a parte de cima das costas: trapézio, ombro de trás e lateral. Puxe a barra na direção do peito, com os cotovelos abertos, e segure 1 seg apertando as escápulas."},
+   {tag:"Exercício", kind:"work", title:"Remada unilateral com halter", rest:"Descanso: 60 seg", items:[["Remada unilateral com halter","3×10 cada lado"]], note:"Trabalha o dorsal, a largura do V. Puxe o halter em direção ao quadril, com o cotovelo colado ao corpo, e desça alongando."},
+   par("Largura das costas e ombro de trás", [["Pulldown de braço reto na polia","3×12"],["Crucifixo inverso","3×15"]], 45, "O pulldown de braço reto trabalha só o dorsal. Sem balançar o corpo."),
+   par("Bíceps", [["Rosca direta barra W","3×8"],["Rosca Scott","3×10"]], 60, "Na Scott, desça devagar até quase esticar o braço. Na última série da W, reduza uns 30% do peso e continue até não conseguir mais."),
+   par("Braço e antebraço", [["Rosca martelo","3×12"],["Rosca inversa (pegada por cima)","3×12"]], 45, "A martelo e a inversa engrossam o braço por fora e o antebraço."),
+   CORE_A]}
  ]},
  {n:5, c:"#2dd4bf", title:"Pernas · Posterior e Glúteo", meta:"Manhã 38 min · Noite 60 min", periods:[
   {name:"☀ MANHÃ", what:"30 min de esteira inclinada em ritmo de conversa e 8 min de mobilidade de quadril.", blocks:[z2("Esteira inclinada",30,N_ESTEIRA), MOB_QUADRIL]},
@@ -247,34 +268,34 @@ var PLAN = [
    par("Posterior e glúteo", [["Cadeira flexora","3×12"],["Elevação de quadril (barra ou máquina)","3×8"]], 60, "Na elevação de quadril, segure 2 seg no topo."),
    par("Abdutora e panturrilha", [["Cadeira abdutora inclinada","3×12-10-8"],["Panturrilha sentado","3×20"]], 60, "Na abdutora, aumente o peso a cada faixa. As 3 faixas formam 1 série."),
    trio("Tríceps, ombro e bíceps", [["Tríceps francês com halter","3×12"],["Elevação lateral na polia","3×15"],["Rosca alternada com halteres","3×10/"]], 45, "Segundo estímulo da semana para tríceps, ombro lateral e bíceps. No tríceps, o braço fica acima da cabeça."),
-   CORE]}
+   CORE_C]}
  ]},
- {n:6, c:"#a78bfa", title:"Ombro · Trapézio", meta:"Manhã 35 min · Noite 70 min", periods:[
-  {name:"☀ MANHÃ", what:"30 min de esteira intervalada e 5 min de mobilidade.", blocks:[hiit("Esteira",30,"5 min de aquecimento, 20 min de ciclos e 5 min para desacelerar. Nos 30 seg fortes, caminhe rápido com inclinação de 10 a 12%. Não corra: hoje é dia de caminhada."), MOB_OMBRO]},
+ {n:6, c:"#a78bfa", title:"Ombro · Trapézio", meta:"Corrida 35 min · Noite 70 min", periods:[
+  {name:"CORRIDA", label:"Corrida", run:true, what:"Corrida leve: a posterior ainda está cansada da quinta. Mobilidade de ombro no fim.", blocks:[{tag:"Corrida", kind:"cardio", run:"B", title:"Corrida", rest:"", items:[["",""]]}, POS_RUN, MOB_OMBRO]},
   {name:"🌙 NOITE", what:"Dia do ombro completo. Inclui o peito e as costas pela segunda vez na semana.", blocks:[
    UP_WARM,
    principal("Desenvolvimento com halteres sentado", [["Desenvolvimento com halteres sentado","5×6"]]),
    piramide("Supino inclinado com halteres", [["Supino inclinado com halteres","12 · 10 · 8"]], "Segunda vez na semana que o peito trabalha. A cada série, suba o peso e faça menos repetições."),
    trio("Ombro lateral em 3 ângulos", [["Elevação lateral de pé com halteres (peso alto)","3×12"],["Elevação lateral na polia, por trás do corpo","3×15/"],["Elevação lateral unilateral, tronco inclinado e apoiado","3×12/"]], 60, "Na última rodada, reduza uns 30% do peso no primeiro exercício e continue até não conseguir mais. Não balance o corpo."),
    par("Peito e costas", [["Voador (peck deck) com banco alto","3×15"],["Puxador alto pegada fechada","3×12"]], 45, "Um exercício de empurrar e um de puxar: um músculo descansa enquanto o outro trabalha."),
-   par("Costas e ombro de trás", [["Remada baixa ou remada na máquina","3×12"],["Crucifixo inverso","3×15"]], 45, "Segunda vez na semana que as costas trabalham. Na remada, puxe os cotovelos para trás e segure 1 seg."),
+   par("Costas e ombro de trás", [["Remada cavalinho","3×10"],["Crucifixo inverso","3×15"]], 45, "Segunda vez na semana que as costas trabalham. Com o peito apoiado, a lombar descansa."),
    par("Ombro de trás e trapézio", [["Face pull na polia","3×15"],["Encolhimento com halteres","3×15"]], 45),
-   CORE]}
+   CORE_B]}
  ]},
- {n:7, c:"#f472b6", title:"Cindy", meta:"Manhã 40 min · Noite 30 min", periods:[
-  {name:"☀ MANHÃ", what:"Corrida longa da semana (veja a aba Corrida) e 5 min de mobilidade.", blocks:[
-   {tag:"Corrida", kind:"cardio", run:"C", title:"Corrida", rest:"", items:[["",""]]},
+ {n:7, c:"#f472b6", title:"Cindy", meta:"Manhã 35 min · Noite 35 min", periods:[
+  {name:"☀ MANHÃ", what:"30 min de esteira leve e 5 min de mobilidade. Sem corrida: o Cindy da noite já é pesado.", blocks:[
+   z2("Esteira inclinada leve",30,N_ESTEIRA+" Bem confortável, só para soltar o corpo."),
    mob("", "Mobilidade leve · 5 min", [["Gato e camelo","2×10"],["Alongamento do flexor de quadril","2×30 seg/"]])]},
-  {name:"🌙 NOITE", what:"Só o Cindy: faça o máximo de rounds em 20 minutos e tente bater o recorde da semana passada. Depois reinicia no Dia 1.", blocks:[
+  {name:"🌙 NOITE", what:"Só o Cindy: faça o máximo de rounds em 20 minutos e tente bater o recorde da semana passada. Depois a semana recomeça no domingo.", blocks:[
    {tag:"Aquecimento", kind:"warm", title:"Mobilidade geral · 5 min", rest:"Sem descanso", items:[["Mobilidade geral","5 min"]]},
    {tag:"Cindy", kind:"ss", title:"Máximo de rounds em 20 minutos", rest:"Descanse só se precisar", items:[["Flexão de braço","5 reps"],["Remada curvada com halteres","10 reps"],["Agachamento livre","10 reps"]], note:"Sem pull-up: a remada faz o papel da puxada. O calcanhar não bate no chão. Anote quantos rounds fez."},
-   CORE]}
+   CORE_C]}
  ]}
 ];
 
 
 
-var GUIA = [["Como funciona", ["<b>Cardio todos os dias, sem exceção:</b> 30 min no mínimo. Nos dias de corrida, a corrida conta como o cardio. Nos outros dias, esteira leve, caminhada inclinada ou escada.", "<b>Água:</b> 3,5 a 4 litros nos dias de treino e cerca de 3 litros no dia 3. Leve uma garrafa de 1 litro e encha de novo ao longo do dia. A urina deve ficar amarelo-clara. Não passe de 1 litro por hora.", "<b>Core todos os dias:</b> 3 exercícios em baixa intensidade, no fim do treino da noite.", "<b>Dias 1, 2, 4, 5 e 6:</b> de manhã, cardio e mobilidade. À noite, musculação, de 50 a 70 min.", "<b>Cada grupo é treinado 2 vezes ou mais por semana:</b> peito, costas, ombro, tríceps, bíceps, quadríceps e posterior. Peito e costas têm o mesmo volume, e o ombro lateral tem o maior volume do treino, para abrir o V.", "<b>Dia 3</b> é sem musculação e sem corrida: só caminhada leve, mobilidade e core. No <b>dia 7</b>, de manhã, a corrida longa e, à noite, só o Cindy.", "São 7 dias em sequência, sem dia fixo. Perdeu um dia, siga do próximo.", "<b>Exercício principal:</b> faça 2 séries leves antes e depois as séries com carga alta, sempre terminando com 1 repetição sobrando. Descanse de 2 a 3 min.", "<b>Em dieta, a carga manda:</b> o que segura o músculo é manter o peso dos exercícios principais. Se a carga cair em 2 treinos seguidos, corte primeiro uma série dos blocos de exercícios seguidos, nunca o principal.", "<b>Pirâmide:</b> a cada série, suba o peso e faça menos repetições.", "<b>2 ou 3 exercícios seguidos:</b> faça um logo depois do outro e só descanse no fim.", "<b>Execução:</b> desça devagar, contando 3 segundos, nos supinos, puxadas e agachamentos. Nas elevações laterais e na extensora, segure 1 a 2 segundos no topo.", "<b>Última série com peso reduzido:</b> onde estiver marcado, tire uns 30% do peso e continue até não conseguir mais.", "<b>Zona 2</b> é o ritmo em que você consegue conversar.", "<b>Corrida nos dias 2, 4 e 7:</b> nunca em dias seguidos e nunca na manhã seguinte ao treino de pernas. Siga a aba Corrida, de forma gradual por causa do esporão. Nunca salte."]], ["Toda semana", ["Pese em jejum, no mesmo dia e horário, e meça a cintura. Lance cada bioimpedância na aba Corpo. Se a massa magra cair mais de 1 kg entre dois retornos, avise a Ana.", "Nos exercícios principais, suba a carga quando fizer todas as repetições com boa técnica. Nos demais, suba carga ou repetições.", "Siga a dieta montada pela Ana Belissa. É ela que define a perda de gordura junto com o treino.", "Anote a carga de cada exercício no campo \"kg\" (o app guarda a última), os rounds do Cindy e o tempo das corridas. É assim que você vê força e fôlego melhorando.", "Durma 7 a 8 horas e beba cerca de 3 L de água por dia.", "Se a cintura não baixar em 2 semanas, ajuste a dieta primeiro, antes de mexer no treino.", "No fim do dia 7, abra a aba Semana e toque em \"Começar nova semana\" para zerar os checks."]]];
+var GUIA = [["Como funciona", ["<b>Cardio todos os dias, sem exceção:</b> 30 min no mínimo. Nos dias de corrida, a corrida conta como o cardio. Nos outros dias, esteira leve, caminhada inclinada ou escada.", "<b>Água:</b> 3,5 a 4 litros nos dias de treino e cerca de 3 litros na terça. Leve uma garrafa de 1 litro e encha de novo ao longo do dia. A urina deve ficar amarelo-clara. Não passe de 1 litro por hora.", "<b>Core todos os dias, em rodízio:</b> A com carga no domingo e na quarta, B parte de baixo e lateral na segunda e na sexta, C leve na terça, quinta e sábado. Sempre no fim do treino.", "<b>Domingo, segunda, quarta, quinta e sexta:</b> de manhã, corrida ou cardio e mobilidade. À noite, musculação, de 50 a 70 min.", "<b>Cada grupo é treinado 2 vezes ou mais por semana:</b> peito, costas, ombro, tríceps, bíceps, quadríceps e posterior. Peito e costas têm o mesmo volume, e o ombro lateral tem o maior volume do treino, para abrir o V.", "<b>Terça</b> é sem musculação e sem corrida: só caminhada leve, mobilidade e core. No <b>sábado</b>, esteira leve de manhã e, à noite, só o Cindy.", "São 7 dias em sequência, sem dia fixo. Perdeu um dia, siga do próximo.", "<b>Exercício principal:</b> faça 2 séries leves antes e depois as séries com carga alta, sempre terminando com 1 repetição sobrando. Descanse de 2 a 3 min.", "<b>Em dieta, a carga manda:</b> o que segura o músculo é manter o peso dos exercícios principais. Se a carga cair em 2 treinos seguidos, corte primeiro uma série dos blocos de exercícios seguidos, nunca o principal.", "<b>Pirâmide:</b> a cada série, suba o peso e faça menos repetições.", "<b>2 ou 3 exercícios seguidos:</b> faça um logo depois do outro e só descanse no fim.", "<b>Execução:</b> desça devagar, contando 3 segundos, nos supinos, puxadas e agachamentos. Nas elevações laterais e na extensora, segure 1 a 2 segundos no topo.", "<b>Última série com peso reduzido:</b> onde estiver marcado, tire uns 30% do peso e continue até não conseguir mais.", "<b>Zona 2</b> é o ritmo em que você consegue conversar.", "<b>Corrida na segunda, quarta, sexta e domingo:</b> segunda curta, quarta longa, sexta e domingo leves, domingo na rua. Siga a aba Corrida, de forma gradual por causa do esporão. Se o calcanhar doer mais de 2 em 10 ao acordar, a corrida do dia vira caminhada."]], ["Toda semana", ["Pese em jejum, no mesmo dia e horário, e meça a cintura. Lance cada bioimpedância na aba Corpo. Se a massa magra cair mais de 1 kg entre dois retornos, avise a Ana.", "Nos exercícios principais, suba a carga quando fizer todas as repetições com boa técnica. Nos demais, suba carga ou repetições.", "Siga a dieta montada pela Ana Belissa. É ela que define a perda de gordura junto com o treino.", "Anote a carga de cada exercício no campo \"kg\" (o app guarda a última), os rounds do Cindy e o tempo das corridas. É assim que você vê força e fôlego melhorando.", "Durma 7 a 8 horas e beba cerca de 3 L de água por dia.", "Se a cintura não baixar em 2 semanas, ajuste a dieta primeiro, antes de mexer no treino.", "No sábado, depois do Cindy, abra a aba Semana e toque em \"Começar nova semana\" para zerar os checks."]]];
 var IC = {
  check:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
  play:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
@@ -317,11 +338,16 @@ function runOn(){return state._r!==0}
 function R(b){
   if(!b.run)return b;
   if(!runOn())return {tag:"Cardio", kind:"cardio", title:"Esteira inclinada · 30 min", rest:"30 min", items:[["Esteira inclinada","30 min"]], note:N_CAM};
-  var r=RUN[curW()][b.run]; return r;
+  var r=RUN[curW()][b.run];
+  if(b.rua){var o={};for(var k in r)o[k]=r[k];o.title=r.title+" · na rua";o.note="Na rua: escolha um trajeto plano, de preferência pista de parque ou ciclovia, e evite ladeiras e calçada irregular. Ritmo de conversa. Tênis com bom amortecimento.";return o}
+  return r;
 }
 function cnt(ti){var t=0,d=0;PLAN[ti].periods.forEach(function(p,pi){p.blocks.forEach(function(b,bi){t++;if(state[ti+"-"+pi+"-"+bi])d++})});return {t:t,d:d}}
 function firstOpen(){for(var i=0;i<PLAN.length;i++){var c=cnt(i);if(c.d<c.t)return i}return 0}
-var cur=(typeof state._d==="number")?state._d:firstOpen();
+var WD=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"],WDS=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+var hojeIdx=new Date().getDay(), hojeKey=new Date().toDateString();
+var cur=(state._day===hojeKey&&typeof state._d==="number")?state._d:hojeIdx;
+state._day=hojeKey;state._d=cur;save();
 function ringH(c){var p=c.t?c.d/c.t:0;return '<div class="ring"><svg viewBox="0 0 62 62"><circle class="t" cx="31" cy="31" r="26"/><circle class="f" cx="31" cy="31" r="26" style="stroke-dashoffset:'+(163.36*(1-p))+'"/></svg><em>'+Math.round(p*100)+'%</em></div>'}
 function daysLeft(){var n=new Date(),t=new Date(2026,11,15);return Math.max(0,Math.ceil((t-new Date(n.getFullYear(),n.getMonth(),n.getDate()))/864e5))}
 function kg(k,v){state["k"+k]=v;save()}
@@ -331,7 +357,7 @@ function kgIn(id,i){
   return '<input class="kg" inputmode="decimal" placeholder="kg" aria-label="Carga em kg" value="'+v+'" onclick="event.stopPropagation()" onchange="kg(\''+id+'-'+i+'\',this.value)">';
 }
 function detail(b,id){
-  var one=b.items.length===1,h="",logs=(b.kind==="work"||(b.kind==="ss"&&b.tag!=="Cindy"));
+  var one=b.items.length===1,h="",logs=(b.kind==="work"||b.kind==="core"||(b.kind==="ss"&&b.tag!=="Cindy"));
   if(one&&b.kind==="work"){
     var r=b.items[0][1];
     if(b.tag==="Pirâmide")h+='<div class="pyr">'+r.split("·").map(function(x){return "<i>"+esc(x.trim())+"</i>"}).join("")+"</div>";
@@ -348,7 +374,7 @@ function listFor(ti,forceOpen){
   t.periods.forEach(function(p,pi){p.blocks.forEach(function(b,bi){var id=ti+"-"+pi+"-"+bi;if(!nextId&&!state[id])nextId=id})});
   t.periods.forEach(function(p,pi){
     var man=p.name.indexOf("MANH")>=0;
-    list+='<div class="per">'+(p.label||(man?"Manhã":"Noite"))+"</div>";
+    list+=p.run?'<div class="per run">'+IC.run+'Corrida · semana '+curW()+(runOn()?'':' · modo caminhada')+'</div>':'<div class="per">'+(p.label||(man?"Manhã":"Noite"))+"</div>";
     p.blocks.forEach(function(b0,bi){
       var b=R(b0),id=ti+"-"+pi+"-"+bi,dn=!!state[id],nx=!PRINT&&id===nextId,one=b.items.length===1;
       var title=(one&&b.kind==="work")?b.items[0][0]:b.title;
@@ -358,10 +384,10 @@ function listFor(ti,forceOpen){
   });
   return list;
 }
-function todayCard(ti){var t=PLAN[ti],c=cnt(ti);return '<div class="today"><div class="lg">'+IC.bar+'</div><div class="tt"><h2>'+esc(t.title)+'</h2><small>'+c.d+" de "+c.t+" concluídos · "+esc(t.meta)+"</small></div>"+ringH(c)+"</div>"}
+function todayCard(ti){var t=PLAN[ti],c=cnt(ti);return '<div class="today"><div class="lg">'+IC.bar+'</div><div class="tt"><small style="font-weight:700">'+WD[ti]+' · Dia '+t.n+'</small><h2>'+esc(t.title)+'</h2><small>'+c.d+" de "+c.t+" concluídos · "+esc(t.meta)+"</small></div>"+ringH(c)+"</div>"}
 function hoje(){
   var t=PLAN[cur];
-  var chips=PLAN.map(function(x,i){var k=cnt(i);return '<button class="chip'+(i===cur?" on":"")+(k.d===k.t?" ok":"")+'" onclick="pick('+i+')">Dia '+x.n+"</button>"}).join("");
+  var chips=PLAN.map(function(x,i){var k=cnt(i);return '<button class="chip'+(i===cur?" on":"")+(k.d===k.t?" ok":"")+'" onclick="pick('+i+')">'+WDS[i]+(i===hojeIdx?' · hoje':'')+"</button>"}).join("");
   var pills=t.periods.map(function(p,pi){
     var all=p.blocks.every(function(b,bi){return state[cur+"-"+pi+"-"+bi]});
     var man=p.name.indexOf("MANH")>=0;
@@ -369,8 +395,9 @@ function hoje(){
   }).join("");
   var cb=null,cid=null;
   t.periods.forEach(function(p,pi){p.blocks.forEach(function(b,bi){if(!cb&&b.kind==="cardio"){cb=R(b);cid=cur+"-"+pi+"-"+bi}})});
-  var cardio=cb?'<div class="card cdio"><small>Cardio de hoje</small><h3>'+esc(cb.title)+'</h3><button class="start'+(state[cid]?" ok":"")+'" onclick="mk(\''+cid+'\')">'+(state[cid]?"Feito":"Concluir")+"<i>"+(state[cid]?IC.check:IC.play)+"</i></button></div>":'<div class="card cdio"><small>Cardio de hoje</small><h3>Sem cardio</h3></div>';
-  return '<div class="chips">'+chips+'</div><div class="two"><div class="card plan"><h3>Plano de hoje</h3>'+pills+"</div>"+cardio+'</div>'+todayCard(cur)+'<div class="sec">Atividade de hoje</div>'+listFor(cur,false);
+  var isRun=false;t.periods.forEach(function(p){if(p.run)isRun=true});
+  var cardio=cb?'<div class="card cdio'+(isRun&&runOn()?' runc':'')+'"><small>'+(isRun&&runOn()?(cur===hojeIdx?'Corrida de hoje':'Corrida')+' · semana '+curW():(cur===hojeIdx?'Cardio de hoje':'Cardio'))+'</small><h3>'+esc(cb.title)+'</h3>'+(isRun&&runOn()?'<button class="lk" onclick="go(\'corrida\')">Ver o passo a passo</button>':'')+'<button class="start'+(state[cid]?" ok":"")+'" onclick="mk(\''+cid+'\')">'+(state[cid]?"Feito":"Concluir")+"<i>"+(state[cid]?IC.check:IC.play)+"</i></button></div>":'<div class="card cdio"><small>Cardio de hoje</small><h3>Sem cardio</h3></div>';
+  return '<div class="chips">'+chips+'</div><div class="two"><div class="card plan"><h3>'+(cur===hojeIdx?'Plano de hoje':'Plano de '+WD[cur].toLowerCase())+'</h3>'+pills+"</div>"+cardio+'</div>'+todayCard(cur)+'<div class="sec">'+(cur===hojeIdx?'Atividade de hoje':'Atividades de '+WD[cur].toLowerCase())+'</div>'+listFor(cur,false);
 }
 var rs=0;
 function nova(){
@@ -380,7 +407,7 @@ function nova(){
 }
 function semana(){
   return '<div class="sec" style="margin-top:22px">Semana</div><button class="rst'+(rs?" arm":"")+'" onclick="nova()">'+(rs?"Toque de novo para zerar os checks":"Começar nova semana")+'</button><p class="hint">As cargas anotadas ficam guardadas.</p>'+PLAN.map(function(t,i){
-    return '<button class="wk'+(i===cur?" cur":"")+'" onclick="pick('+i+',true)"><div class="n">'+t.n+'</div><div class="tt"><b>'+esc(t.title)+"</b><small>"+esc(t.meta)+"</small></div>"+ringH(cnt(i))+"</button>";
+    return '<button class="wk'+(i===cur?" cur":"")+'" onclick="pick('+i+',true)"><div class="n" style="font-size:14px">'+WDS[i]+'</div><div class="tt"><b>'+esc(t.title)+"</b><small>"+esc(t.meta)+"</small></div>"+ringH(cnt(i))+"</button>";
   }).join("");
 }
 var CHECK=["Caminhar 30 min sem dor acima de 2 em 10.","Primeiros passos da manhã com dor de até 2 em 10, por 5 dias seguidos.","20 elevações de panturrilha em uma perna só, sem dor forte.","Liberação do ortopedista ou da fisioterapeuta, por causa do esporão."];
@@ -389,13 +416,21 @@ function corridaTab(){
   var w=curW();
   var chips=[1,2,3,4,5,6].map(function(x){return '<button class="chip'+(x===w?" on":"")+'" onclick="setW('+x+')">Sem '+x+" · "+wkLabel(x)+"</button>"}).join("");
   var chk=CHECK.map(function(x,i){var on=state["c"+i];return '<button class="ck2'+(on?" on":"")+'" onclick="tc('+i+')"><i>'+IC.check+"</i><span>"+x+"</span></button>"}).join("");
-  return '<div class="sec" style="margin-top:22px">Corrida · 5 km</div>'+
-   '<div class="rc goal"><h3>Meta: 5 km em 25 a 30 min</h3><p>Pace de 5:00 a 6:00 min/km. Corridas nos dias 2, 4 e 7. Cada corrida já conta como o cardio do dia. Nos outros dias, esteira leve, caminhada inclinada ou escada.</p></div>'+
-   '<button class="sw" onclick="tr()"><span><b>Modo com corrida</b><small>'+(runOn()?"Ligado: dias 2, 4 e 7 têm corrida":"Desligado: esteira inclinada, só caminhada")+'</small></span><span class="tg'+(runOn()?" on":"")+'"></span></button>'+
+  var rb=null,rid=null,nextRun=null;
+  PLAN[cur].periods.forEach(function(p,pi){p.blocks.forEach(function(b,bi){if(b.run&&!rb){rb=b;rid=cur+"-"+pi+"-"+bi}})});
+  if(!rb){for(var k=1;k<=7;k++){var j=(cur+k)%7;if(PLAN[j].periods.some(function(p){return p.run})){nextRun=WD[j].toLowerCase();break}}}
+  var hojeRun='';
+  if(rb&&runOn()){var s0=RUN[w][rb.run];
+    hojeRun='<div class="rc today-run"><small>'+WD[cur]+' · semana '+w+'</small><h3>'+esc(s0.title)+'</h3><p>'+s0.rest+' no total</p>'+s0.items.map(function(it,i){return '<div class="st"><b>'+(i+1)+'</b><span>'+esc(it[0])+'</span><em>'+esc(it[1])+'</em></div>'}).join("")+'<p class="nt" style="padding-top:10px">'+esc(s0.note)+'</p><button class="start'+(state[rid]?" ok":"")+'" onclick="mk(\''+rid+'\')">'+(state[rid]?"Corrida feita":"Concluir corrida")+'<i>'+(state[rid]?IC.check:IC.play)+'</i></button></div>';
+  }else if(rb){hojeRun='<div class="rc today-run"><small>'+WD[cur]+'</small><h3>Modo caminhada ligado</h3><p>Hoje é esteira inclinada, só caminhada.</p></div>';}
+  else{hojeRun='<div class="rc today-run off"><small>'+WD[cur]+'</small><h3>Sem corrida neste dia</h3><p>Faça o cardio do dia na aba Hoje. Próxima corrida: '+nextRun+'.</p></div>';}
+  return '<div class="sec" style="margin-top:22px">Corrida · 5 km</div>'+hojeRun+
+   '<div class="rc goal"><h3>Meta: 5 km em 25 a 30 min</h3><p>Pace de 5:00 a 6:00 min/km. Corridas na segunda, quarta, sexta e domingo. Cada corrida já conta como o cardio do dia. Nos outros dias, esteira leve, caminhada inclinada ou escada.</p></div>'+
+   '<button class="sw" onclick="tr()"><span><b>Modo com corrida</b><small>'+(runOn()?"Ligado: segunda, quarta, sexta e domingo":"Desligado: esteira inclinada, só caminhada")+'</small></span><span class="tg'+(runOn()?" on":"")+'"></span></button>'+
    '<div class="chips" style="padding-top:4px">'+chips+'</div>'+
-   '<div style="margin-top:12px">'+sessHtml(w,"B","Dia 2")+sessHtml(w,"A","Dia 4")+sessHtml(w,"C","Dia 7")+"</div>"+
+   '<div style="margin-top:12px">'+sessHtml(w,"A","Seg")+sessHtml(w,"C","Qua")+sessHtml(w,"B","Sex e Dom")+"</div>"+
    '<div class="gd"><h4>Antes de começar a correr</h4><p class="nt" style="padding:0 0 6px">Com esporão, só comece quando cumprir tudo. Se algum item falhar, fique mais 2 semanas só com esteira inclinada e alongamentos, e teste de novo.</p>'+chk+'</div>'+
-   '<div class="gd"><h4>Durante e depois</h4><ul><li><b>Dor de até 2 em 10:</b> siga o plano.</li><li><b>Dor 3 em 10:</b> termine a corrida, não aumente o volume na próxima e descanse 48 h.</li><li><b>Dor 4 ou 5 em 10:</b> pare, volte caminhando, descanse de 48 a 72 h e volte para a semana anterior.</li><li><b>Mais de 5 em 10, dor aguda ou inchaço no calcanhar:</b> pare e procure o ortopedista.</li><li><b>Tênis:</b> bom amortecimento, com drop de 10 mm ou mais. Palmilha, se indicada.</li><li><b>Piso:</b> esteira, terra ou grama. Evite asfalto e ladeiras.</li><li><b>Ordem da semana:</b> a corrida nunca cai em dias seguidos nem na manhã seguinte ao treino de pernas. No dia 2 ela é leve e de manhã, e as pernas treinam só à noite.</li><li><b>Depois de correr:</b> alongue a panturrilha e a sola do pé, 2 vezes de 30 seg em cada lado.</li></ul></div>'+
+   '<div class="gd"><h4>Durante e depois</h4><ul><li><b>Dor de até 2 em 10:</b> siga o plano.</li><li><b>Dor 3 em 10:</b> termine a corrida, não aumente o volume na próxima e descanse 48 h.</li><li><b>Dor 4 ou 5 em 10:</b> pare, volte caminhando, descanse de 48 a 72 h e volte para a semana anterior.</li><li><b>Mais de 5 em 10, dor aguda ou inchaço no calcanhar:</b> pare e procure o ortopedista.</li><li><b>Tênis:</b> bom amortecimento, com drop de 10 mm ou mais. Palmilha, se indicada.</li><li><b>Piso:</b> esteira, terra ou grama. Evite asfalto e ladeiras.</li><li><b>Ordem da semana:</b> segunda é a mais curta, porque as pernas treinam à noite. Quarta é a longa, com a perna descansada. Sexta e domingo são leves. Sábado não tem corrida, por causa do Cindy.</li><li><b>Domingo e segunda são seguidos:</b> se o calcanhar doer mais de 2 em 10 ao acordar na segunda, troque a corrida por esteira inclinada, só caminhando.</li><li><b>Depois de correr:</b> alongue a panturrilha e a sola do pé, 2 vezes de 30 seg em cada lado.</li></ul></div>'+
    '<p class="src">Estrutura baseada na progressão corrida e caminhada do <a href="https://www.mayoclinic.org/healthy-lifestyle/fitness/in-depth/5k-run/art-20050962">Mayo Clinic</a> e nas orientações de retorno à corrida com fascite plantar da <a href="https://www.michiganfootdoctors.com/running-after-plantar-fasciitis/">Michigan Foot Doctors</a>. São orientações gerais: valide com seu médico ou fisioterapeuta.</p>';
 }
 function guia(){
@@ -404,8 +439,8 @@ function guia(){
 function printAll(){
   var h='';
   PLAN.forEach(function(t,i){h+='<div style="break-inside:avoid-page;margin-top:26px">'+todayCard(i)+listFor(i,true)+"</div>"});
-  h+='<div class="sec" style="margin-top:30px">Corrida · 5 km</div><div class="rc goal"><h3>Meta: 5 km em 25 a 30 min</h3><p>Pace de 5:00 a 6:00 min/km. Corridas nos dias 2, 4 e 7.</p></div>';
-  for(var w=1;w<=6;w++){h+='<div style="break-inside:avoid"><div class="per">Semana '+w+" · "+wkLabel(w)+"</div>"+sessHtml(w,"B","Dia 2")+sessHtml(w,"A","Dia 4")+sessHtml(w,"C","Dia 7")+"</div>"}
+  h+='<div class="sec" style="margin-top:30px">Corrida · 5 km</div><div class="rc goal"><h3>Meta: 5 km em 25 a 30 min</h3><p>Pace de 5:00 a 6:00 min/km. Corridas na segunda, quarta, sexta e domingo.</p></div>';
+  for(var w=1;w<=6;w++){h+='<div style="break-inside:avoid"><div class="per">Semana '+w+" · "+wkLabel(w)+"</div>"+sessHtml(w,"A","Seg")+sessHtml(w,"C","Qua")+sessHtml(w,"B","Sex e Dom")+"</div>"}
   h+=corpoHtml();
   h+=GUIA.map(function(g){return '<div class="gd" style="break-inside:avoid"><h4>'+esc(g[0])+"</h4><ul>"+g[1].map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul></div>"}).join("");
   return h;

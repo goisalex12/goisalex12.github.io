@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Treino Alex</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#161616">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Treino Alex">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#161616;--card:#212124;--cream:#E8D8C9;--ink:#EDE3D6;--mute:rgba(244,241,234,.56);--faint:rgba(244,241,234,.28);
+--or:#F3701E;--blue:#9FB3D4;--lime:#F3701E;--yel:#F3701E;--steel:#4B607F;--dark:#101014;
+--sans:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+html{background:var(--bg)}
+body{font-family:var(--sans);color:var(--ink);max-width:480px;margin:0 auto;padding:22px 18px 130px;-webkit-font-smoothing:antialiased;line-height:1.35}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;text-align:left}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:12px}
+
+.hd{display:flex;align-items:center;gap:12px}
+.av{width:46px;height:46px;border-radius:50%;background:var(--or);display:grid;place-items:center;font-weight:800;font-size:19px;color:#1a1a1a;flex-shrink:0}
+.hi{flex:1;min-width:0}
+.hi small{display:block;font-size:12px;color:var(--mute)}
+.hi b{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.cd{display:flex;flex-direction:column;align-items:center;justify-content:center;width:56px;height:46px;border-radius:16px;background:var(--card);border:1px solid rgba(255,255,255,.08)}
+.cd b{font-size:17px;font-weight:800;line-height:1}.cd span{font-size:9px;color:var(--mute);margin-top:2px;letter-spacing:.04em}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding:18px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:9px 14px;border-radius:16px;background:var(--card);color:var(--mute);font-weight:700;font-size:13px;border:1px solid rgba(255,255,255,.06)}
+.chip.on{background:var(--cream);color:#111;border-color:transparent}
+.chip.ok{color:var(--lime)}.chip.on.ok{color:#111}
+
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:12px;margin-top:14px}
+.card{border-radius:28px;padding:16px}
+.plan{background:var(--or);color:#1a1a1a}
+.plan h3,.cdio h3{font-size:16px;font-weight:800;letter-spacing:-.01em;margin-bottom:12px}
+.pill{display:flex;gap:9px;align-items:flex-start;padding:10px 10px;border-radius:18px;border:1.5px dashed rgba(26,26,26,.55);background:rgba(26,26,26,.08);margin-bottom:8px}
+.pill .ck{width:22px;height:22px;border-radius:50%;border:1.8px solid #1a1a1a;flex-shrink:0;display:grid;place-items:center;margin-top:1px}
+.pill.ok .ck{background:#1a1a1a;color:var(--or)}
+.pill b{display:block;font-size:13px;font-weight:800}
+.pill span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;opacity:.92;line-height:1.3}
+.cdio{background:var(--steel);color:var(--cream);display:flex;flex-direction:column}
+.cdio small{font-size:11px;opacity:.75}
+.cdio h3{margin:6px 0 auto;font-size:19px;line-height:1.15;letter-spacing:-.02em}
+.start{margin-top:14px;display:flex;align-items:center;justify-content:space-between;background:var(--cream);border-radius:30px;padding:5px 5px 5px 18px;font-weight:700;font-size:15px;color:#111}
+.start i{width:40px;height:40px;border-radius:50%;background:#0d0d10;display:grid;place-items:center;color:#fff}
+.start.ok{background:#111;color:var(--yel)}.start.ok i{background:var(--lime);color:#0d0d10}
+
+.today{margin-top:12px;background:#E8D8C9;color:#15151a;display:flex;align-items:center;gap:14px;border-radius:28px;padding:16px}
+.today .lg{width:58px;height:58px;border-radius:50%;background:var(--or);display:grid;place-items:center;color:#1a1a1a;flex-shrink:0}
+.today .tt{flex:1;min-width:0}
+.today h2{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+.today small{font-size:12px;color:rgba(21,21,26,.55)}
+.ring{position:relative;width:62px;height:62px;flex-shrink:0}
+.ring svg{width:62px;height:62px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:6}
+.ring .t{stroke:rgba(21,21,26,.1)}.ring .f{stroke:var(--or);stroke-linecap:round;stroke-dasharray:163.36;transition:stroke-dashoffset .5s}
+.ring em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:14px}
+
+.sec{margin:26px 0 8px;font-size:21px;font-weight:800;letter-spacing:-.02em}
+.per{display:flex;align-items:center;gap:8px;margin:16px 0 4px;font-size:12px;color:var(--mute);letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.per::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.08)}
+.ev{position:relative;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:12px 0 16px}
+.ev::before{content:"";position:absolute;left:16px;top:38px;bottom:-4px;border-left:2px dashed rgba(255,255,255,.22)}
+.ev:last-child::before{display:none}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;color:transparent;background:var(--bg);position:relative;z-index:1}
+.ev.done .dot{background:var(--lime);border-color:var(--lime);color:#0a0a0d}
+.ev.next .dot{border-color:var(--or);box-shadow:0 0 0 5px rgba(243,112,30,.22)}
+.evb{min-width:0;cursor:pointer}
+.evt{font-size:17px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+.ev.done .evt{color:var(--mute);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.3)}
+.evs{font-size:12px;color:var(--mute);margin-top:3px}
+.evr{position:absolute;right:0;top:12px;display:flex;align-items:flex-start}
+.evt,.evs{padding-right:104px}
+.evr .tm{font-size:11.5px;color:var(--mute);padding-top:3px;max-width:86px;text-align:right;line-height:1.3}
+.now{background:var(--lime);color:#0a0a0d;font-weight:800;font-size:15px;padding:12px 22px;border-radius:26px;box-shadow:0 8px 22px rgba(243,112,30,.28)}
+.dt{display:none;margin-top:12px;border-radius:20px;background:var(--card);padding:6px 14px 12px}
+.ev.open .dt{display:block}
+.rw{display:flex;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px}
+.rw:last-of-type{border-bottom:0}
+.rw span{flex:1}.rw b{font-weight:800;color:var(--blue);white-space:nowrap;font-size:14px}
+.big{font-size:44px;font-weight:800;letter-spacing:-.04em;color:var(--or);padding:8px 0 2px;line-height:1}
+.pyr{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0 2px}
+.pyr i{font-style:normal;font-weight:800;font-size:13px;padding:6px 12px;border-radius:14px;background:rgba(75,96,127,.45);color:#C9D6EC}
+.nt{font-size:12.5px;color:var(--mute);padding-top:8px;line-height:1.5}
+
+.wk{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:24px;padding:14px;margin-bottom:10px;width:100%;border:1px solid rgba(255,255,255,.06)}
+.wk .n{width:46px;height:46px;border-radius:16px;background:var(--cream);color:#111;display:grid;place-items:center;font-weight:800;font-size:20px;flex-shrink:0}
+.wk.cur .n{background:var(--or);color:#fff}
+.wk .tt{flex:1;min-width:0}.wk b{display:block;font-size:16px;font-weight:700}.wk small{font-size:12px;color:var(--mute)}
+.wk .ring{width:46px;height:46px}.wk .ring svg{width:46px;height:46px}.wk .ring circle{stroke-width:5}
+.wk .ring .t{stroke:rgba(255,255,255,.12)}.wk .ring em{font-size:11px;color:var(--ink)}
+.gd{background:var(--card);border-radius:24px;padding:16px 18px;margin-bottom:12px}
+.gd h4{font-size:18px;font-weight:800;margin-bottom:8px}
+.gd li{list-style:none;padding:9px 0 9px 22px;position:relative;font-size:14px;color:var(--mute);line-height:1.5;border-bottom:1px solid rgba(255,255,255,.06)}
+.gd li:last-child{border-bottom:0}
+.gd li::before{content:"";position:absolute;left:2px;top:16px;width:8px;height:8px;border-radius:50%;background:var(--or)}
+.gd li b{color:var(--ink)}
+
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:6px;padding:7px;border-radius:40px;background:#1B1B21;border:1px solid rgba(255,255,255,.08);box-shadow:0 16px 40px rgba(0,0,0,.55);z-index:5}
+.nb{height:48px;min-width:48px;border-radius:30px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ink);padding:0 14px;font-weight:700;font-size:15px}
+.nb.on{background:var(--yel);color:#111;padding:0 18px 0 12px}
+.nb:not(.on) span{display:none}
+.pm .nav,.pm .chips{display:none}.pm .now,.pm .start{display:none}
+.rc{border-radius:24px;padding:16px 18px;margin-bottom:12px}
+.rc.goal{background:var(--or);color:#1a1a1a}.rc.goal h3{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.15}.rc.goal p{margin-top:8px;font-size:14px;opacity:.95;line-height:1.5}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border-radius:20px;padding:14px 16px;margin-bottom:12px;width:100%}
+.sw b{font-size:15px}.sw small{display:block;color:var(--mute);font-size:12px;margin-top:2px}
+.tg{width:52px;height:30px;border-radius:20px;background:#333;position:relative;flex-shrink:0;transition:background .2s}
+.tg::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s}
+.tg.on{background:var(--yel)}.tg.on::after{transform:translateX(22px);background:#111}
+.ss{background:var(--card);border-radius:22px;padding:14px 16px;margin-bottom:10px}
+.ss h4{font-size:16px;font-weight:800;display:flex;gap:8px;align-items:center}
+.ss h4 i{font-style:normal;background:var(--yel);color:#111;border-radius:8px;padding:2px 9px;font-size:12px}
+.ss small{color:var(--mute);font-size:12px}
+.ck2{display:flex;gap:12px;align-items:flex-start;width:100%;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px;line-height:1.45}
+.ck2:last-child{border-bottom:0}
+.ck2 i{width:24px;height:24px;border-radius:8px;border:2px solid var(--mute);flex-shrink:0;display:grid;place-items:center;color:transparent}
+.ck2.on i{background:var(--yel);border-color:var(--yel);color:#111}
+.src{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:6px}
+.src a{color:var(--mute)}
+.kg{width:54px;flex-shrink:0;background:#141416;border:1px solid rgba(255,255,255,.16);border-radius:10px;color:var(--ink);font:inherit;font-size:13px;font-weight:700;padding:6px 4px;text-align:center}
+.kg::placeholder{color:var(--faint);font-weight:500}
+.rw{align-items:center}
+.rst{display:block;width:100%;text-align:center;padding:14px;border-radius:20px;border:1.5px dashed rgba(255,255,255,.25);color:var(--mute);font-weight:700;font-size:14px;margin:4px 0}
+.rst.arm{border-color:var(--or);color:var(--or)}
+.hint{font-size:12px;color:var(--faint);text-align:center;margin:6px 0 12px}
+.nb{min-width:44px;padding:0 11px}
+.dm{background:var(--card);border-radius:22px;padding:14px 16px;margin-bottom:10px}
+.dm h4{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:16px;font-weight:800}
+.dm h4 small{font-size:12px;color:var(--mute);font-weight:600;white-space:nowrap}
+.dm .wh{font-size:12px;color:var(--mute);margin:2px 0 6px}
+.dm .rw b{color:var(--blue)}
+.dm .rw i{display:block;font-style:normal;font-size:12px;color:var(--mute)}
+.mac{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.mac div{background:var(--card);border-radius:18px;padding:12px 6px;text-align:center}
+.mac b{display:block;font-size:19px;font-weight:800;color:var(--ink)}
+.mac span{font-size:11px;color:var(--mute)}
+.mac div:first-child{background:var(--or)}.mac div:first-child b,.mac div:first-child span{color:#1a1a1a}
+.ev2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.ev2 div{background:var(--card);border-radius:20px;padding:14px}
+.ev2 small{display:block;font-size:12px;color:var(--mute)}
+.ev2 b{display:block;font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+.ev2 em{font-style:normal;font-size:12px;font-weight:700}
+.up{color:#7FC97F}.dn{color:#7FC97F}.bad{color:#FF8A80}.neu{color:var(--mute)}
+.ch{background:var(--card);border-radius:22px;padding:14px 14px 8px;margin-bottom:10px}
+.ch h4{font-size:14px;font-weight:800;margin-bottom:6px}
+.ch svg{width:100%;height:auto;display:block}
+.er{background:var(--card);border-radius:20px;padding:12px 14px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.er b{font-size:15px}.er small{grid-column:1/-1;font-size:12px;color:var(--mute);line-height:1.5}
+.er .x{font-size:12px;color:var(--mute);padding:6px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.12)}
+.er .x.arm{color:var(--or);border-color:var(--or)}
+.fm{background:var(--card);border-radius:22px;padding:14px 16px;margin:10px 0}
+.fm h4{font-size:16px;font-weight:800;margin-bottom:10px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fm label{display:block;font-size:12px;color:var(--mute)}
+.fm input{display:block;width:100%;margin-top:4px;background:#141416;border:1px solid rgba(255,255,255,.16);border-radius:12px;color:var(--ink);font:inherit;font-size:15px;padding:10px 12px}
+.fm .full{grid-column:1/-1}
+.sv{margin-top:12px;width:100%;text-align:center;background:var(--or);color:#1a1a1a;font-weight:800;padding:13px;border-radius:24px}
+.msg{font-size:12.5px;color:#FF8A80;margin-top:8px;min-height:1px}
+.tb{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0 14px}
+.tb th,.tb td{padding:7px 4px;border-bottom:1px solid rgba(255,255,255,.1);text-align:right}
+.tb th:first-child,.tb td:first-child{text-align:left}
+.tb th{color:var(--mute);font-weight:600}
+.fade{animation:f .35s ease}@keyframes f{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.fade{animation:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav class="nav" id="nav"></nav>
+<script>
+
+var CORE = {tag:"Core diário", kind:"core", title:"Abdômen · 3 exercícios", rest:"Descanso: 30 seg", items:[
+  ["Roda abdominal de joelhos (amplitude curta)","2×8"],["Elevação de joelhos na cadeira romana ou na barra","2×12"],["Abdominal reverso no banco inclinado","2×15"]],
+  note:"Intensidade baixa, porque o core é diário: pare sempre com 2 ou 3 repetições sobrando. Movimentos lentos, sem balançar o corpo e sem puxar com o pescoço. Para o abdômen aparecer, o que mais pesa é o cardio e a dieta."};
+var UP_WARM = {tag:"Aquecimento", kind:"warm", title:"Pré treino de superiores · 3 min", rest:"Sem descanso", items:[
+  ["Rotação de ombro com elástico","2×10"],["Abertura escapular com elástico","2×12"],["Flexão escapular","2×10"]]};
+var LOW_WARM = function(extra){ return {tag:"Aquecimento", kind:"warm", title:"Pré treino de pernas · 3 min", rest:"Sem descanso", items:[["Mobilidade de quadril e tornozelo","1 min"],[extra[0],extra[1]]]}; };
+
+function z2(eq, min, nota){ return {tag:"Cardio zona 2", kind:"cardio", title:eq+" em ritmo de conversa", rest:min+" min", items:[[eq,min+" min"]], note:nota||"Consegue falar frases curtas sem ofegar."}; }
+function hiit(eq, min, nota){ return {tag:"Cardio intervalado", kind:"cardio", title:eq+": 30 seg forte, 30 seg leve", rest:min+" min", items:[[eq+" (ciclos de 30+30)",min+" min"]], note:nota||"Nos 30 seg fortes, vá o mais rápido que conseguir, mantendo a postura."}; }
+var N_ESTEIRA = "Hoje é só caminhada, sem correr: a corrida fica nos dias 2, 4 e 7. Inclinação de 8 a 12% e velocidade de 5 a 6 km/h. Pise com o pé todo no chão.";
+var N_CAM = "Somente caminhada. Inclinação de 8 a 12% e velocidade de 5 a 6 km/h. Pise com o pé todo no chão.";
+function mob(tag, title, items){ return {tag:tag||"Mobilidade", kind:"mob", title:title, rest:"Descanso: 20 seg", items:items}; }
+var MOB_OMBRO = mob("", "Ombro e coluna · 5 min", [["Rotação torácica no solo","2×10/"],["Slide de parede","2×12"]]);
+var MOB_QUADRIL = mob("", "Quadril e tornozelo · 8 min", [["Alongamento do flexor de quadril","2×30 seg/"],["Agachamento profundo com pausa embaixo","3×30 seg"],["Mobilidade de tornozelo na parede","2×10/"]]);
+var MOB_COLUNA = mob("", "Coluna e dorsal · 5 min", [["Gato e camelo","2×10"],["Rotação torácica ajoelhado","2×8/"]]);
+function principal(title, items, nota){ return {tag:"Exercício principal", kind:"work", title:title, rest:"Descanso: 2 a 3 min", items:items, note:nota||"Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando e desça contando 3 segundos."}; }
+function piramide(title, items, nota){ return {tag:"Pirâmide", kind:"work", title:title, rest:"Descanso: 2 min", items:items, note:nota||"A cada série, suba o peso e faça menos repetições."}; }
+function par(title, items, rest, nota){ return {tag:"2 exercícios seguidos", kind:"ss", title:title, rest:"Descanso: "+(rest||60)+" seg depois dos dois", items:items, note:nota}; }
+function trio(title, items, rest, nota){ return {tag:"3 exercícios seguidos", kind:"ss", title:title, rest:"Descanso: "+(rest||60)+" seg depois dos três", items:items, note:nota}; }
+var DROP = "Na última série, reduza uns 30% do peso e continue até não conseguir mais.";
+
+var PLAN = [
+ {n:1, c:"#60a5fa", title:"Peito · Ombro · Tríceps", meta:"Manhã 35 min · Noite 70 min", periods:[
+  {name:"☀ MANHÃ", what:"30 min de escada em ritmo moderado e 5 min de mobilidade.", blocks:[z2("Escada",30,"Ritmo constante, em que ainda dá para falar frases curtas. Não apoie o peso nas mãos e pise com o pé todo. Se o calcanhar incomodar, troque pela esteira inclinada."), MOB_OMBRO]},
+  {name:"🌙 NOITE", what:"Musculação de peito, tríceps e um bloco de ombro.", blocks:[
+   UP_WARM,
+   principal("Supino reto com barra", [["Supino reto com barra","5×5"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando e desça contando 3 segundos. Peça ajuda se a carga for alta."),
+   piramide("Supino inclinado com halteres", [["Supino inclinado com halteres","10 · 8 · 6 · 6"]], "Banco a 30 graus, para trabalhar a parte de cima do peito. A cada série, suba o peso e faça menos repetições."),
+   {tag:"Exercício", kind:"work", title:"Voador (peck deck)", rest:"Descanso: 60 seg", items:[["Voador (peck deck)","3×12"]], note:"Aperte o peito no centro e segure 1 seg. Na última série, reduza uns 30% do peso e continue até não conseguir mais."},
+   par("Ombro", [["Desenvolvimento com halteres sentado","3×8"],["Elevação lateral sentado com halteres","3×15"]], 60, "Na última série da elevação lateral, reduza uns 30% do peso e continue até não conseguir mais. Não balance o corpo."),
+   par("Tríceps", [["Tríceps polia corda","3×12"],["Tríceps francês","3×10"]], 60),
+   CORE]}
+ ]},
+ {n:2, c:"#4ade80", title:"Pernas · Quadríceps", meta:"Manhã 40 min · Noite 62 min", periods:[
+  {name:"☀ MANHÃ", what:"Corrida leve da semana (veja a aba Corrida) e 8 min de mobilidade de quadril. O treino de pernas fica para a noite.", blocks:[{tag:"Corrida", kind:"cardio", run:"B", title:"Corrida", rest:"", items:[["",""]]}, MOB_QUADRIL]},
+  {name:"🌙 NOITE", what:"Musculação de pernas, com foco em quadríceps. Não deixe o calcanhar bater no chão.", blocks:[
+   LOW_WARM(["Agachamento sem peso","2×15"]),
+   principal("Agachamento livre", [["Agachamento livre com barra","5×5"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando e desça contando 3 segundos, só até onde o calcanhar fique firme no chão."),
+   piramide("Hack squat ou leg press 45", [["Hack squat ou leg press 45","12 · 10 · 8"]], "Com os pés mais baixos na plataforma, o quadríceps trabalha mais. A cada série, suba o peso."),
+   par("Quadríceps", [["Cadeira extensora (segure 2 seg no topo)","3×12"],["Afundo com halteres (pé na ponta, calcanhar não bate)","3×10/"]], 60, "Na última série da extensora, reduza uns 30% do peso e continue até não conseguir mais."),
+   par("Posterior e panturrilha", [["Cadeira flexora","3×12"],["Panturrilha sentado","3×20"]], 60),
+   CORE]}
+ ]},
+ {n:3, c:"#8AA6CE", title:"Descanso", meta:"Caminhada 30 min · Mobilidade 10 min", periods:[
+  {name:"DESCANSO", label:"Descanso", icon:"rest", what:"Sem musculação. O músculo se recupera e cresce hoje. Sem corrida também. Faça a caminhada leve, a mobilidade e o core.", blocks:[
+   z2("Esteira inclinada leve",30,N_ESTEIRA+" Ritmo bem leve, só para ativar a circulação."),
+   mob("Mobilidade", "Mobilidade leve · 10 min", [["Gato e camelo","2×10"],["Rotação de quadril 90/90","2×8/"],["Rotação torácica no solo","2×10/"],["Alongamento do flexor de quadril","2×30 seg/"]]),
+   CORE]}
+ ]},
+ {n:4, c:"#fb923c", title:"Costas · Bíceps · Antebraço", meta:"Manhã 40 min · Noite 50 min", periods:[
+  {name:"☀ MANHÃ", what:"Corrida da semana (veja a aba Corrida) e 5 min de mobilidade de coluna.", blocks:[
+   {tag:"Corrida", kind:"cardio", run:"A", title:"Corrida", rest:"", items:[["",""]]},
+   MOB_COLUNA]},
+  {name:"🌙 NOITE", what:"Musculação de costas e bíceps, direto ao ponto.", blocks:[
+   UP_WARM,
+   principal("Puxador alto pegada aberta", [["Puxador alto pegada aberta","5×6"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando. Puxe os cotovelos em direção ao bolso, sem balançar o corpo, e volte contando 3 segundos."),
+   piramide("Remada cavalinho ou máquina", [["Remada cavalinho ou máquina","10 · 8 · 6"]], "Com o peito apoiado, a lombar descansa para o treino de perna do dia seguinte. A cada série, suba o peso."),
+   par("Largura das costas e ombro de trás", [["Pulldown de braço reto na polia","3×12"],["Crucifixo inverso","3×15"]], 45, "O pulldown de braço reto trabalha só o dorsal, que dá a largura em V. Sem balançar o corpo."),
+   par("Bíceps e antebraço", [["Rosca direta barra W","3×8"],["Rosca martelo junto","3×12"]], 45, "A rosca martelo já pega o antebraço. Na última série da W, reduza uns 30% do peso e continue até não conseguir mais."),
+   CORE]}
+ ]},
+ {n:5, c:"#2dd4bf", title:"Pernas · Posterior e Glúteo", meta:"Manhã 38 min · Noite 60 min", periods:[
+  {name:"☀ MANHÃ", what:"30 min de esteira inclinada em ritmo de conversa e 8 min de mobilidade de quadril.", blocks:[z2("Esteira inclinada",30,N_ESTEIRA), MOB_QUADRIL]},
+  {name:"🌙 NOITE", what:"Musculação de posterior de coxa e glúteo, com mais quadríceps no hack e um bloco rápido de braços e ombro.", blocks:[
+   LOW_WARM(["Ponte de glúteo","2×15"]),
+   principal("Stiff", [["Stiff com barra","5×6"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando. Mantenha a coluna reta e desça contando 3 segundos."),
+   piramide("Hack squat ou agachamento frontal", [["Hack squat ou agachamento frontal","12 · 10 · 8"]], "Segunda vez na semana que o quadríceps trabalha com carga alta. A cada série, suba o peso."),
+   par("Posterior e glúteo", [["Cadeira flexora","3×12"],["Elevação de quadril (barra ou máquina)","3×8"]], 60, "Na elevação de quadril, segure 2 seg no topo."),
+   par("Abdutora e panturrilha", [["Cadeira abdutora inclinada","3×12-10-8"],["Panturrilha sentado","3×20"]], 60, "Na abdutora, aumente o peso a cada faixa. As 3 faixas formam 1 série."),
+   trio("Tríceps, ombro e bíceps", [["Tríceps francês com halter","3×12"],["Elevação lateral na polia","3×15"],["Rosca alternada com halteres","3×10/"]], 45, "Segundo estímulo da semana para tríceps, ombro lateral e bíceps. No tríceps, o braço fica acima da cabeça."),
+   CORE]}
+ ]},
+ {n:6, c:"#a78bfa", title:"Ombro · Trapézio", meta:"Manhã 35 min · Noite 70 min", periods:[
+  {name:"☀ MANHÃ", what:"30 min de esteira intervalada e 5 min de mobilidade.", blocks:[hiit("Esteira",30,"5 min de aquecimento, 20 min de ciclos e 5 min para desacelerar. Nos 30 seg fortes, caminhe rápido com inclinação de 10 a 12%. Não corra: hoje é dia de caminhada."), MOB_OMBRO]},
+  {name:"🌙 NOITE", what:"Dia do ombro completo. Inclui o peito e as costas pela segunda vez na semana.", blocks:[
+   UP_WARM,
+   principal("Desenvolvimento com halteres sentado", [["Desenvolvimento com halteres sentado","5×6"]]),
+   piramide("Supino inclinado com halteres", [["Supino inclinado com halteres","12 · 10 · 8"]], "Segunda vez na semana que o peito trabalha. A cada série, suba o peso e faça menos repetições."),
+   trio("Ombro lateral em 3 ângulos", [["Elevação lateral de pé com halteres (peso alto)","3×12"],["Elevação lateral na polia, por trás do corpo","3×15/"],["Elevação lateral unilateral, tronco inclinado e apoiado","3×12/"]], 60, "Na última rodada, reduza uns 30% do peso no primeiro exercício e continue até não conseguir mais. Não balance o corpo."),
+   par("Peito e costas", [["Voador (peck deck) com banco alto","3×15"],["Puxador alto pegada fechada","3×12"]], 45, "Um exercício de empurrar e um de puxar: um músculo descansa enquanto o outro trabalha."),
+   par("Costas e ombro de trás", [["Remada baixa ou remada na máquina","3×12"],["Crucifixo inverso","3×15"]], 45, "Segunda vez na semana que as costas trabalham. Na remada, puxe os cotovelos para trás e segure 1 seg."),
+   par("Ombro de trás e trapézio", [["Face pull na polia","3×15"],["Encolhimento com halteres","3×15"]], 45),
+   CORE]}
+ ]},
+ {n:7, c:"#f472b6", title:"Cindy", meta:"Manhã 40 min · Noite 30 min", periods:[
+  {name:"☀ MANHÃ", what:"Corrida longa da semana (veja a aba Corrida) e 5 min de mobilidade.", blocks:[
+   {tag:"Corrida", kind:"cardio", run:"C", title:"Corrida", rest:"", items:[["",""]]},
+   mob("", "Mobilidade leve · 5 min", [["Gato e camelo","2×10"],["Alongamento do flexor de quadril","2×30 seg/"]])]},
+  {name:"🌙 NOITE", what:"Só o Cindy: faça o máximo de rounds em 20 minutos e tente bater o recorde da semana passada. Depois reinicia no Dia 1.", blocks:[
+   {tag:"Aquecimento", kind:"warm", title:"Mobilidade geral · 5 min", rest:"Sem descanso", items:[["Mobilidade geral","5 min"]]},
+   {tag:"Cindy", kind:"ss", title:"Máximo de rounds em 20 minutos", rest:"Descanse só se precisar", items:[["Flexão de braço","5 reps"],["Remada curvada com halteres","10 reps"],["Agachamento livre","10 reps"]], note:"Sem pull-up: a remada faz o papel da puxada. O calcanhar não bate no chão. Anote quantos rounds fez."},
+   CORE]}
+ ]}
+];
+
+
+
+var GUIA = [["Como funciona", ["<b>Cardio todos os dias, sem exceção:</b> 30 min no mínimo. Nos dias de corrida, a corrida conta como o cardio. Nos outros dias, esteira leve, caminhada inclinada ou escada.", "<b>Água:</b> 3,5 a 4 litros nos dias de treino e cerca de 3 litros no dia 3. Leve uma garrafa de 1 litro e encha de novo ao longo do dia. A urina deve ficar amarelo-clara. Não passe de 1 litro por hora.", "<b>Core todos os dias:</b> 3 exercícios em baixa intensidade, no fim do treino da noite.", "<b>Dias 1, 2, 4, 5 e 6:</b> de manhã, cardio e mobilidade. À noite, musculação, de 50 a 70 min.", "<b>Cada grupo é treinado 2 vezes ou mais por semana:</b> peito, costas, ombro, tríceps, bíceps, quadríceps e posterior. Peito e costas têm o mesmo volume, e o ombro lateral tem o maior volume do treino, para abrir o V.", "<b>Dia 3</b> é sem musculação e sem corrida: só caminhada leve, mobilidade e core. No <b>dia 7</b>, de manhã, a corrida longa e, à noite, só o Cindy.", "São 7 dias em sequência, sem dia fixo. Perdeu um dia, siga do próximo.", "<b>Exercício principal:</b> faça 2 séries leves antes e depois as séries com carga alta, sempre terminando com 1 repetição sobrando. Descanse de 2 a 3 min.", "<b>Em dieta, a carga manda:</b> o que segura o músculo é manter o peso dos exercícios principais. Se a carga cair em 2 treinos seguidos, corte primeiro uma série dos blocos de exercícios seguidos, nunca o principal.", "<b>Pirâmide:</b> a cada série, suba o peso e faça menos repetições.", "<b>2 ou 3 exercícios seguidos:</b> faça um logo depois do outro e só descanse no fim.", "<b>Execução:</b> desça devagar, contando 3 segundos, nos supinos, puxadas e agachamentos. Nas elevações laterais e na extensora, segure 1 a 2 segundos no topo.", "<b>Última série com peso reduzido:</b> onde estiver marcado, tire uns 30% do peso e continue até não conseguir mais.", "<b>Zona 2</b> é o ritmo em que você consegue conversar.", "<b>Corrida nos dias 2, 4 e 7:</b> nunca em dias seguidos e nunca na manhã seguinte ao treino de pernas. Siga a aba Corrida, de forma gradual por causa do esporão. Nunca salte."]], ["Toda semana", ["Pese em jejum, no mesmo dia e horário, e meça a cintura. Lance cada bioimpedância na aba Corpo. Se a massa magra cair mais de 1 kg entre dois retornos, avise a Ana.", "Nos exercícios principais, suba a carga quando fizer todas as repetições com boa técnica. Nos demais, suba carga ou repetições.", "Siga a dieta montada pela Ana Belissa. É ela que define a perda de gordura junto com o treino.", "Anote a carga de cada exercício no campo \"kg\" (o app guarda a última), os rounds do Cindy e o tempo das corridas. É assim que você vê força e fôlego melhorando.", "Durma 7 a 8 horas e beba cerca de 3 L de água por dia.", "Se a cintura não baixar em 2 semanas, ajuste a dieta primeiro, antes de mexer no treino.", "No fim do dia 7, abra a aba Semana e toque em \"Começar nova semana\" para zerar os checks."]]];
+var IC = {
+ check:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ play:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+ home:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8.5a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg>',
+ week:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',
+ run:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14.5" cy="4.5" r="1.8"/><path d="M8 21l3-6 3.5 2.5L16 21M11 15l-1-4.5 4-2 2.5 3.5 3 .5M10 10.5L7 12"/></svg>',
+ food:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.5 1.5-3.5 4-3.5 7.5 0 1.4.9 2.5 2.2 2.5H17"/></svg>',
+ body:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/></svg>',
+ info:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.8v.1"/></svg>',
+ bar:'<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v6M7 6v12M17 6v12M21 9v6M7 12h10"/></svg>'
+};
+/* corrida: 6 semanas, base em corrida e caminhada, com progressão gradual */
+var NC = "Corra leve, em ritmo de conversa: se não conseguir falar frases curtas, reduza. Prefira esteira com 1% de inclinação ou terra e grama. Evite asfalto.";
+function RB(total, title, items, note){ return {tag:"Corrida", kind:"cardio", title:title, rest:total+" min", items:items, note:note||NC}; }
+function ciclos(r,c,n){ return [r+" min de corrida leve + "+c+" min de caminhada", n+"×"]; }
+var AQ=["Caminhada de aquecimento","3 min"], DS=["Caminhada para desacelerar","3 min"];
+var RUN = {
+ 1:{A:RB(30,"Corrida e caminhada",[AQ,ciclos(1,2,8),DS]), B:RB(30,"Corrida e caminhada",[AQ,ciclos(1,2,8),DS]), C:RB(36,"Corrida e caminhada · longa",[AQ,ciclos(1,2,10),DS])},
+ 2:{A:RB(30,"Corrida e caminhada",[AQ,ciclos(2,2,6),DS]), B:RB(30,"Corrida e caminhada",[AQ,ciclos(2,2,6),DS]), C:RB(38,"Corrida e caminhada · longa",[AQ,ciclos(2,2,8),DS])},
+ 3:{A:RB(31,"Corrida e caminhada",[AQ,ciclos(3,2,5),DS]), B:RB(31,"Corrida e caminhada",[AQ,ciclos(3,2,5),DS]), C:RB(41,"Corrida e caminhada · longa",[AQ,ciclos(3,2,7),DS])},
+ 4:{A:RB(34,"Corrida e caminhada",[AQ,ciclos(5,2,4),DS]), B:RB(34,"Corrida e caminhada",[AQ,ciclos(5,2,4),DS]), C:RB(41,"Corrida e caminhada · longa",[AQ,ciclos(5,2,5),DS])},
+ 5:{A:RB(30,"Ritmo de prova",[AQ,["5 min no ritmo de prova (pace de 6:00 a 6:30) + 1 min de caminhada","4×"],DS],"No ritmo de prova você respira forte, mas controlado. Pise com o pé todo e passos curtos."),
+    B:RB(30,"Corrida contínua leve",[AQ,["Corrida contínua leve","20 min"],["Caminhada para desacelerar","7 min"]]),
+    C:RB(33,"Corrida longa contínua",[AQ,["Corrida contínua leve","25 min"],["Caminhada para desacelerar","5 min"]])},
+ 6:{A:RB(36,"Ritmo de prova",[AQ,["8 min no pace de 5:30 a 6:00 + 2 min de caminhada","3×"],DS],"Mantenha o pace constante. Se a dor no calcanhar passar de 3 em 10, volte para o ritmo leve."),
+    B:RB(31,"Corrida contínua leve",[AQ,["Corrida contínua leve","25 min"],DS]),
+    C:RB(40,"Teste de 5 km",[["Caminhada e trote de aquecimento","5 min"],["5 km: meta de 30 min (6:00 por km). Se estiver confortável, tente 5:30","5 km"],["Caminhada para desacelerar","5 min"]],"Depois da semana 6, repita a semana 6 e baixe o pace aos poucos, em direção a 5:00 por km.")}
+};
+var RUN_START = new Date(2026,10,16);
+function autoWeek(){var n=new Date(),d=Math.floor((new Date(n.getFullYear(),n.getMonth(),n.getDate())-RUN_START)/864e5);return Math.min(6,Math.max(1,Math.floor(d/7)+1))}
+function wkLabel(w){var d=new Date(RUN_START.getTime()+(w-1)*7*864e5);return ("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)}
+var KEY="alex-v3", state={};
+try{state=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){state={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+var PRINT = location.hash==="#print";
+var tab="hoje";
+function curW(){return typeof state._w==="number"?state._w:autoWeek()}
+function runOn(){return state._r!==0}
+function R(b){
+  if(!b.run)return b;
+  if(!runOn())return {tag:"Cardio", kind:"cardio", title:"Esteira inclinada · 30 min", rest:"30 min", items:[["Esteira inclinada","30 min"]], note:N_CAM};
+  var r=RUN[curW()][b.run]; return r;
+}
+function cnt(ti){var t=0,d=0;PLAN[ti].periods.forEach(function(p,pi){p.blocks.forEach(function(b,bi){t++;if(state[ti+"-"+pi+"-"+bi])d++})});return {t:t,d:d}}
+function firstOpen(){for(var i=0;i<PLAN.length;i++){var c=cnt(i);if(c.d<c.t)return i}return 0}
+var cur=(typeof state._d==="number")?state._d:firstOpen();
+function ringH(c){var p=c.t?c.d/c.t:0;return '<div class="ring"><svg viewBox="0 0 62 62"><circle class="t" cx="31" cy="31" r="26"/><circle class="f" cx="31" cy="31" r="26" style="stroke-dashoffset:'+(163.36*(1-p))+'"/></svg><em>'+Math.round(p*100)+'%</em></div>'}
+function daysLeft(){var n=new Date(),t=new Date(2026,11,15);return Math.max(0,Math.ceil((t-new Date(n.getFullYear(),n.getMonth(),n.getDate()))/864e5))}
+function kg(k,v){state["k"+k]=v;save()}
+function kgIn(id,i){
+  if(PRINT)return "";
+  var v=String(state["k"+id+"-"+i]||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+  return '<input class="kg" inputmode="decimal" placeholder="kg" aria-label="Carga em kg" value="'+v+'" onclick="event.stopPropagation()" onchange="kg(\''+id+'-'+i+'\',this.value)">';
+}
+function detail(b,id){
+  var one=b.items.length===1,h="",logs=(b.kind==="work"||(b.kind==="ss"&&b.tag!=="Cindy"));
+  if(one&&b.kind==="work"){
+    var r=b.items[0][1];
+    if(b.tag==="Pirâmide")h+='<div class="pyr">'+r.split("·").map(function(x){return "<i>"+esc(x.trim())+"</i>"}).join("")+"</div>";
+    else h+='<div class="big">'+esc(r)+"</div>";
+    if(!PRINT)h+='<div class="rw"><span>Carga usada</span>'+kgIn(id,0)+"</div>";
+  }else if(!(one&&(b.kind==="cardio"||b.kind==="warm"))){
+    h+=b.items.map(function(it,i){return '<div class="rw"><span>'+esc(it[0])+"</span><b>"+esc(it[1])+"</b>"+(logs?kgIn(id,i):"")+"</div>"}).join("");
+  }
+  if(b.note)h+='<p class="nt">'+esc(b.note)+"</p>";
+  return h;
+}
+function listFor(ti,forceOpen){
+  var t=PLAN[ti],nextId=null,list="";
+  t.periods.forEach(function(p,pi){p.blocks.forEach(function(b,bi){var id=ti+"-"+pi+"-"+bi;if(!nextId&&!state[id])nextId=id})});
+  t.periods.forEach(function(p,pi){
+    var man=p.name.indexOf("MANH")>=0;
+    list+='<div class="per">'+(p.label||(man?"Manhã":"Noite"))+"</div>";
+    p.blocks.forEach(function(b0,bi){
+      var b=R(b0),id=ti+"-"+pi+"-"+bi,dn=!!state[id],nx=!PRINT&&id===nextId,one=b.items.length===1;
+      var title=(one&&b.kind==="work")?b.items[0][0]:b.title;
+      var right=nx?'<button class="now" onclick="mk(\''+id+'\')">Agora</button>':'<span class="tm">'+esc(b.rest.replace("Descanso: ","").replace("Descanse só se precisar","livre"))+"</span>";
+      list+='<div class="ev'+(PRINT?"":" fade")+(dn?" done":"")+(nx?" next":"")+((forceOpen||state["o"+id])?" open":"")+'" data-id="'+id+'"><button class="dot" aria-label="Marcar como feito" onclick="mk(\''+id+'\')">'+IC.check+'</button><div class="evb" onclick="op(this)"><div class="evt">'+esc(title)+'</div><div class="evs">'+esc(b.tag)+'</div><div class="dt">'+detail(b,id)+'</div></div><div class="evr">'+right+"</div></div>";
+    });
+  });
+  return list;
+}
+function todayCard(ti){var t=PLAN[ti],c=cnt(ti);return '<div class="today"><div class="lg">'+IC.bar+'</div><div class="tt"><h2>'+esc(t.title)+'</h2><small>'+c.d+" de "+c.t+" concluídos · "+esc(t.meta)+"</small></div>"+ringH(c)+"</div>"}
+function hoje(){
+  var t=PLAN[cur];
+  var chips=PLAN.map(function(x,i){var k=cnt(i);return '<button class="chip'+(i===cur?" on":"")+(k.d===k.t?" ok":"")+'" onclick="pick('+i+')">Dia '+x.n+"</button>"}).join("");
+  var pills=t.periods.map(function(p,pi){
+    var all=p.blocks.every(function(b,bi){return state[cur+"-"+pi+"-"+bi]});
+    var man=p.name.indexOf("MANH")>=0;
+    return '<div class="pill'+(all?" ok":"")+'"><div class="ck">'+(all?IC.check:"")+'</div><div><b>'+(p.label||(man?"Manhã":"Noite"))+"</b><span>"+esc(p.what)+"</span></div></div>";
+  }).join("");
+  var cb=null,cid=null;
+  t.periods.forEach(function(p,pi){p.blocks.forEach(function(b,bi){if(!cb&&b.kind==="cardio"){cb=R(b);cid=cur+"-"+pi+"-"+bi}})});
+  var cardio=cb?'<div class="card cdio"><small>Cardio de hoje</small><h3>'+esc(cb.title)+'</h3><button class="start'+(state[cid]?" ok":"")+'" onclick="mk(\''+cid+'\')">'+(state[cid]?"Feito":"Concluir")+"<i>"+(state[cid]?IC.check:IC.play)+"</i></button></div>":'<div class="card cdio"><small>Cardio de hoje</small><h3>Sem cardio</h3></div>';
+  return '<div class="chips">'+chips+'</div><div class="two"><div class="card plan"><h3>Plano de hoje</h3>'+pills+"</div>"+cardio+'</div>'+todayCard(cur)+'<div class="sec">Atividade de hoje</div>'+listFor(cur,false);
+}
+var rs=0;
+function nova(){
+  if(!rs){rs=1;render();return}
+  Object.keys(state).forEach(function(k){if(/^o?\d+-\d+-\d+$/.test(k))delete state[k]});
+  rs=0;cur=0;state._d=0;save();tab="hoje";render();window.scrollTo(0,0);
+}
+function semana(){
+  return '<div class="sec" style="margin-top:22px">Semana</div><button class="rst'+(rs?" arm":"")+'" onclick="nova()">'+(rs?"Toque de novo para zerar os checks":"Começar nova semana")+'</button><p class="hint">As cargas anotadas ficam guardadas.</p>'+PLAN.map(function(t,i){
+    return '<button class="wk'+(i===cur?" cur":"")+'" onclick="pick('+i+',true)"><div class="n">'+t.n+'</div><div class="tt"><b>'+esc(t.title)+"</b><small>"+esc(t.meta)+"</small></div>"+ringH(cnt(i))+"</button>";
+  }).join("");
+}
+var CHECK=["Caminhar 30 min sem dor acima de 2 em 10.","Primeiros passos da manhã com dor de até 2 em 10, por 5 dias seguidos.","20 elevações de panturrilha em uma perna só, sem dor forte.","Liberação do ortopedista ou da fisioterapeuta, por causa do esporão."];
+function sessHtml(w,k,label){var b=RUN[w][k];return '<div class="ss"><h4><i>'+label+'</i>'+esc(b.title)+'</h4><small>'+b.rest+" no total</small>"+b.items.map(function(it){return '<div class="rw"><span>'+esc(it[0])+"</span><b>"+esc(it[1])+"</b></div>"}).join("")+"</div>"}
+function corridaTab(){
+  var w=curW();
+  var chips=[1,2,3,4,5,6].map(function(x){return '<button class="chip'+(x===w?" on":"")+'" onclick="setW('+x+')">Sem '+x+" · "+wkLabel(x)+"</button>"}).join("");
+  var chk=CHECK.map(function(x,i){var on=state["c"+i];return '<button class="ck2'+(on?" on":"")+'" onclick="tc('+i+')"><i>'+IC.check+"</i><span>"+x+"</span></button>"}).join("");
+  return '<div class="sec" style="margin-top:22px">Corrida · 5 km</div>'+
+   '<div class="rc goal"><h3>Meta: 5 km em 25 a 30 min</h3><p>Pace de 5:00 a 6:00 min/km. Corridas nos dias 2, 4 e 7. Cada corrida já conta como o cardio do dia. Nos outros dias, esteira leve, caminhada inclinada ou escada.</p></div>'+
+   '<button class="sw" onclick="tr()"><span><b>Modo com corrida</b><small>'+(runOn()?"Ligado: dias 2, 4 e 7 têm corrida":"Desligado: esteira inclinada, só caminhada")+'</small></span><span class="tg'+(runOn()?" on":"")+'"></span></button>'+
+   '<div class="chips" style="padding-top:4px">'+chips+'</div>'+
+   '<div style="margin-top:12px">'+sessHtml(w,"B","Dia 2")+sessHtml(w,"A","Dia 4")+sessHtml(w,"C","Dia 7")+"</div>"+
+   '<div class="gd"><h4>Antes de começar a correr</h4><p class="nt" style="padding:0 0 6px">Com esporão, só comece quando cumprir tudo. Se algum item falhar, fique mais 2 semanas só com esteira inclinada e alongamentos, e teste de novo.</p>'+chk+'</div>'+
+   '<div class="gd"><h4>Durante e depois</h4><ul><li><b>Dor de até 2 em 10:</b> siga o plano.</li><li><b>Dor 3 em 10:</b> termine a corrida, não aumente o volume na próxima e descanse 48 h.</li><li><b>Dor 4 ou 5 em 10:</b> pare, volte caminhando, descanse de 48 a 72 h e volte para a semana anterior.</li><li><b>Mais de 5 em 10, dor aguda ou inchaço no calcanhar:</b> pare e procure o ortopedista.</li><li><b>Tênis:</b> bom amortecimento, com drop de 10 mm ou mais. Palmilha, se indicada.</li><li><b>Piso:</b> esteira, terra ou grama. Evite asfalto e ladeiras.</li><li><b>Ordem da semana:</b> a corrida nunca cai em dias seguidos nem na manhã seguinte ao treino de pernas. No dia 2 ela é leve e de manhã, e as pernas treinam só à noite.</li><li><b>Depois de correr:</b> alongue a panturrilha e a sola do pé, 2 vezes de 30 seg em cada lado.</li></ul></div>'+
+   '<p class="src">Estrutura baseada na progressão corrida e caminhada do <a href="https://www.mayoclinic.org/healthy-lifestyle/fitness/in-depth/5k-run/art-20050962">Mayo Clinic</a> e nas orientações de retorno à corrida com fascite plantar da <a href="https://www.michiganfootdoctors.com/running-after-plantar-fasciitis/">Michigan Foot Doctors</a>. São orientações gerais: valide com seu médico ou fisioterapeuta.</p>';
+}
+function guia(){
+  return '<div class="sec" style="margin-top:26px">Guia</div>'+GUIA.map(function(g){return '<div class="gd"><h4>'+esc(g[0])+"</h4><ul>"+g[1].map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul></div>"}).join("");
+}
+function printAll(){
+  var h='';
+  PLAN.forEach(function(t,i){h+='<div style="break-inside:avoid-page;margin-top:26px">'+todayCard(i)+listFor(i,true)+"</div>"});
+  h+='<div class="sec" style="margin-top:30px">Corrida · 5 km</div><div class="rc goal"><h3>Meta: 5 km em 25 a 30 min</h3><p>Pace de 5:00 a 6:00 min/km. Corridas nos dias 2, 4 e 7.</p></div>';
+  for(var w=1;w<=6;w++){h+='<div style="break-inside:avoid"><div class="per">Semana '+w+" · "+wkLabel(w)+"</div>"+sessHtml(w,"B","Dia 2")+sessHtml(w,"A","Dia 4")+sessHtml(w,"C","Dia 7")+"</div>"}
+  h+=corpoHtml();
+  h+=GUIA.map(function(g){return '<div class="gd" style="break-inside:avoid"><h4>'+esc(g[0])+"</h4><ul>"+g[1].map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul></div>"}).join("");
+  return h;
+}
+
+/* evolução corporal */
+if(!state.evo){state.evo=[];save()}
+var evDel=-1, evMsg="";
+function num(v){v=String(v||"").replace(",",".").trim();var n=parseFloat(v);return isFinite(n)?n:NaN}
+function f1(n){return n.toFixed(1).replace(".",",")}
+function f2(n){return n.toFixed(2).replace(".",",")}
+function dBR(d){var x=String(d).split("-");return x.length===3?x[2]+"/"+x[1]+"/"+x[0]:d}
+function evSorted(){return state.evo.slice().sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:0})}
+function comp(e){var gk=e.p*e.g/100;return {gk:gk,mm:e.p-gk}}
+function delta(v,good){var s=(v>0?"+":"")+f1(v)+" kg";var cls=Math.abs(v)<0.05?"neu":((good==="down"?v<0:v>-0.5)?"dn":"bad");return '<em class="'+cls+'">'+s+'</em>'}
+function spark(vals,labels,color){
+  var W=320,H=110,pl=34,pr=10,pt=12,pb=22,mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals);
+  if(mx-mn<1){mn-=0.5;mx+=0.5}
+  var pad=(mx-mn)*0.15;mn-=pad;mx+=pad;
+  var x=function(i){return vals.length<2?(pl+(W-pl-pr)/2):pl+i*(W-pl-pr)/(vals.length-1)},y=function(v){return pt+(mx-v)*(H-pt-pb)/(mx-mn)};
+  var pts=vals.map(function(v,i){return x(i).toFixed(1)+","+y(v).toFixed(1)}).join(" ");
+  var g='<svg viewBox="0 0 '+W+' '+H+'" role="img">';
+  [mx-pad,mn+pad].forEach(function(v){g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="rgba(255,255,255,.08)"/><text x="'+(pl-6)+'" y="'+(y(v)+4)+'" text-anchor="end" font-size="10" fill="rgba(237,227,214,.5)">'+f1(v)+'</text>'});
+  if(vals.length>1)g+='<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+  vals.forEach(function(v,i){g+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="4" fill="'+color+'"/>';
+    if(i===0||i===vals.length-1)g+='<text x="'+x(i)+'" y="'+(H-6)+'" text-anchor="'+(vals.length<2?"middle":i===0?"start":"end")+'" font-size="10" fill="rgba(237,227,214,.5)">'+labels[i]+'</text>'});
+  return g+'</svg>';
+}
+function evForm(){return '<div class="fm"><h4>Novo retorno</h4><div class="fg"><label>Data<input type="date" id="ed" value="'+(function(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)})()+'"></label><label>Peso (kg)<input id="ep" inputmode="decimal" placeholder="80,9"></label><label>Gordura (%)<input id="eg" inputmode="decimal" placeholder="22,4"></label><label>Observação<input id="eo" placeholder="opcional"></label></div><button class="sv" onclick="addEvo()">Salvar retorno</button><div class="msg">'+esc(evMsg)+'</div></div><p class="hint">Compare só avaliações do mesmo aparelho, no mesmo horário e em jejum. Os dados ficam salvos só neste celular.</p>'}
+function corpoHtml(){
+  if(!state.evo.length){return '<div class="sec" style="margin-top:22px">Evolução corporal</div><p class="nt" style="padding:0 2px 6px">Lance aqui a sua primeira bioimpedância. O app calcula a gordura e a massa magra em kg e mostra a evolução a cada retorno.</p>'+(PRINT?'':evForm())}
+  var L=evSorted(),last=L[L.length-1],first=L[0],cl=comp(last),cf=comp(first);
+  var h='<div class="sec" style="margin-top:22px">Evolução corporal</div>';
+  h+='<div class="ev2"><div><small>Gordura</small><b>'+f1(last.g)+'%</b><small>'+f2(cl.gk)+' kg</small>'+(L.length>1?delta(cl.gk-cf.gk,"down"):"")+'</div><div><small>Massa magra</small><b>'+f1(cl.mm)+' kg</b><small>Peso '+f2(last.p)+' kg</small>'+(L.length>1?delta(cl.mm-cf.mm,"keep"):"")+'</div></div>';
+  if(L.length>1){var lb=L.map(function(e){return dBR(e.d).slice(0,5)});
+    h+='<div class="ch"><h4>Gordura (kg) · deve cair</h4>'+spark(L.map(function(e){return comp(e).gk}),lb,"#F3701E")+'</div>';
+    h+='<div class="ch"><h4>Massa magra (kg) · deve se manter</h4>'+spark(L.map(function(e){return comp(e).mm}),lb,"#9FB3D4")+'</div>';
+  }else h+='<p class="nt" style="padding:0 2px 10px">O gráfico aparece a partir do segundo retorno.</p>';
+  h+='<div class="gd"><h4>Metas, mantendo '+f1(cl.mm)+' kg de massa magra</h4><ul><li><b>20%:</b> cerca de '+f1(cl.mm/0.80)+' kg</li><li><b>15% (atlético):</b> cerca de '+f1(cl.mm/0.85)+' kg</li><li><b>12% (físico da referência):</b> cerca de '+f1(cl.mm/0.88)+' kg</li></ul></div>';
+  if(!PRINT){
+    h+='<div class="fm"><h4>Novo retorno</h4><div class="fg"><label>Data<input type="date" id="ed" value="'+(function(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)})()+'"></label><label>Peso (kg)<input id="ep" inputmode="decimal" placeholder="80,9"></label><label>Gordura (%)<input id="eg" inputmode="decimal" placeholder="22,4"></label><label>Observação<input id="eo" placeholder="opcional"></label></div><button class="sv" onclick="addEvo()">Salvar retorno</button><div class="msg">'+esc(evMsg)+'</div></div>';
+    h+='<p class="hint">Compare só avaliações do mesmo aparelho, no mesmo horário e em jejum. Os dados ficam salvos neste celular.</p>';
+  }
+  h+='<div class="sec" style="font-size:17px">Retornos</div>';
+  if(PRINT){
+    h+='<table class="tb"><tr><th>Data</th><th>Peso</th><th>Gord. %</th><th>Gord. kg</th><th>Magra kg</th></tr>'+L.map(function(e){var c=comp(e);return '<tr><td>'+dBR(e.d)+'</td><td>'+f2(e.p)+'</td><td>'+f1(e.g)+'</td><td>'+f2(c.gk)+'</td><td>'+f2(c.mm)+'</td></tr>'}).join("")+'</table>';
+  }else{
+    h+=L.slice().reverse().map(function(e){var c=comp(e),i=state.evo.indexOf(e);return '<div class="er"><b>'+dBR(e.d)+'</b><button class="x'+(evDel===i?" arm":"")+'" onclick="delEvo('+i+')">'+(evDel===i?"Apagar?":"Excluir")+'</button><small>Peso '+f2(e.p)+' kg · Gordura '+f1(e.g)+'% ('+f2(c.gk)+' kg) · Massa magra '+f2(c.mm)+' kg'+(e.o?' · '+esc(e.o):'')+'</small></div>'}).join("");
+  }
+  return h;
+}
+function addEvo(){
+  var d=document.getElementById("ed").value,p=num(document.getElementById("ep").value),g=num(document.getElementById("eg").value),o=document.getElementById("eo").value.trim();
+  if(!d){evMsg="Preencha a data.";render();return}
+  if(!(p>30&&p<250)){evMsg="Confira o peso, em kg.";render();return}
+  if(!(g>2&&g<60)){evMsg="Confira a gordura, em %.";render();return}
+  state.evo.push({d:d,p:p,g:g,o:o});evMsg="";evDel=-1;save();render();
+}
+function delEvo(i){
+    if(evDel!==i){evDel=i;render();return}
+  state.evo.splice(i,1);evDel=-1;evMsg="";save();render();
+}
+function render(){
+  if(PRINT)document.body.classList.add("pm");
+  var head='<div class="hd"><div class="av">A</div><div class="hi"><small>Bom treino,</small><b>Alex</b></div><div class="cd"><b>'+daysLeft()+'</b><span>DIAS</span></div></div>';
+  var body=PRINT?printAll():(tab==="hoje"?hoje():tab==="semana"?semana()+guia():tab==="corrida"?corridaTab():corpoHtml());
+  document.getElementById("app").innerHTML=head+body;
+  var nb=[["hoje","Hoje",IC.home],["semana","Semana",IC.week],["corrida","Corrida",IC.run],["corpo","Corpo",IC.body]];
+  document.getElementById("nav").innerHTML=nb.map(function(n){return '<button class="nb'+(tab===n[0]?" on":"")+'" aria-label="'+n[1]+'" onclick="go(\''+n[0]+'\')">'+n[2]+"<span>"+n[1]+"</span></button>"}).join("");
+}
+function go(t){tab=t;rs=0;evDel=-1;evMsg="";render();window.scrollTo(0,0)}
+function pick(i,toHoje){cur=i;state._d=i;save();if(toHoje)tab="hoje";render();window.scrollTo(0,0)}
+function mk(id){state[id]=state[id]?0:1;save();render()}
+function op(el){var e=el.closest(".ev"),id="o"+e.getAttribute("data-id");e.classList.toggle("open");state[id]=e.classList.contains("open")?1:0;save()}
+function setW(w){state._w=w;save();render()}
+function tr(){state._r=runOn()?0:1;save();render()}
+function tc(i){state["c"+i]=state["c"+i]?0:1;save();render()}
+render();
+if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
+  window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
+}
+</script>
+</body>
+</html>

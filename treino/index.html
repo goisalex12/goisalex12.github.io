@@ -196,6 +196,11 @@ var CORE_B = {tag:"Core B · parte de baixo e lateral", kind:"core", title:"Part
 var CORE_C = {tag:"Core C · leve", kind:"core", title:"Core leve · 3 exercícios", rest:"Descanso: 30 seg", items:[
   ["Dead bug","2×8/"],["Prancha com toque no ombro","2×10/"],["Vácuo abdominal","3×20 seg"]],
   note:"Dia leve, para o abdômen se recuperar. No vácuo, solte todo o ar e puxe o umbigo para dentro e para cima."};
+var FIN_NOTE = "A cada minuto, no início do minuto, faça o exercício e descanse o que sobrar. São 8 minutos, 4 rodadas de cada. Sem salto, por causa do esporão.";
+function fin(items, extra){ return {tag:"Fechamento híbrido", kind:"fin", title:"EMOM de 8 min", rest:"8 min", items:items, note:FIN_NOTE+(extra?" "+extra:"")}; }
+var FIN_DOM = fin([["Minutos ímpares: swing com halter ou kettlebell","12 reps"],["Minutos pares: farmer walk com halteres pesados","30 m"]], "No swing, o quadril empurra e os braços só acompanham. No farmer walk, ombros para trás e passos curtos.");
+var FIN_QUA = fin([["Minutos ímpares: battle rope","30 seg"],["Minutos pares: farmer walk com halteres pesados","30 m"]], "Sem battle rope, faça 30 seg de remo ergômetro forte ou de mountain climber lento.");
+var FIN_SEX = fin([["Minutos ímpares: swing com halter ou kettlebell","12 reps"],["Minutos pares: battle rope","30 seg"]], "Sem battle rope, faça 30 seg de remo ergômetro forte ou de mountain climber lento.");
 var POS_RUN = {tag:"Depois da corrida", kind:"warm", title:"Panturrilha e sola do pé · 3 min", rest:"Sem descanso", items:[
   ["Alongamento de panturrilha na parede","2×30 seg/"],["Rolar a sola do pé numa bolinha","1 min/"]], note:"Cuida do calcanhar depois de correr, por causa do esporão."};
 var UP_WARM = {tag:"Aquecimento", kind:"warm", title:"Pré treino de superiores · 3 min", rest:"Sem descanso", items:[
@@ -217,15 +222,16 @@ function trio(title, items, rest, nota){ return {tag:"3 exercícios seguidos", k
 var DROP = "Na última série, reduza uns 30% do peso e continue até não conseguir mais.";
 
 var PLAN = [
- {n:1, c:"#60a5fa", title:"Peito · Ombro · Tríceps", meta:"Corrida 35 min · Noite 70 min", periods:[
+ {n:1, c:"#60a5fa", title:"Peito · Ombro · Tríceps", meta:"Corrida 35 min · Noite 75 min", periods:[
   {name:"CORRIDA", label:"Corrida", run:true, what:"Corrida leve na rua, cuidado com o calcanhar e mobilidade de ombro.", blocks:[{tag:"Corrida", kind:"cardio", run:"B", rua:true, title:"Corrida", rest:"", items:[["",""]]}, POS_RUN, MOB_OMBRO]},
   {name:"🌙 NOITE", what:"Musculação de peito, tríceps e um bloco de ombro.", blocks:[
    UP_WARM,
    principal("Supino reto com barra", [["Supino reto com barra","5×5"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando e desça contando 3 segundos. Peça ajuda se a carga for alta."),
-   piramide("Supino inclinado com halteres", [["Supino inclinado com halteres","10 · 8 · 6 · 6"]], "Banco a 30 graus, para trabalhar a parte de cima do peito. A cada série, suba o peso e faça menos repetições."),
+   piramide("Supino inclinado com halteres", [["Supino inclinado com halteres","10 · 8 · 6"]], "Banco a 30 graus, para trabalhar a parte de cima do peito. A cada série, suba o peso e faça menos repetições."),
    {tag:"Exercício", kind:"work", title:"Voador (peck deck)", rest:"Descanso: 60 seg", items:[["Voador (peck deck)","3×12"]], note:"Aperte o peito no centro e segure 1 seg. Na última série, reduza uns 30% do peso e continue até não conseguir mais."},
-   par("Ombro", [["Desenvolvimento com halteres sentado","3×8"],["Elevação lateral sentado com halteres","3×15"]], 60, "Na última série da elevação lateral, reduza uns 30% do peso e continue até não conseguir mais. Não balance o corpo."),
-   par("Tríceps", [["Tríceps polia corda","3×12"],["Tríceps francês","3×10"]], 60),
+   par("Ombro", [["Desenvolvimento com halteres sentado","3×8"],["Elevação lateral sentado com halteres","3×15"]], 45, "Na última série da elevação lateral, reduza uns 30% do peso e continue até não conseguir mais. Não balance o corpo."),
+   par("Tríceps", [["Tríceps polia corda","3×12"],["Tríceps francês","3×10"]], 45),
+   FIN_DOM,
    CORE_A]}
  ]},
  {n:2, c:"#4ade80", title:"Pernas · Quadríceps", meta:"Corrida 40 min · Noite 62 min", periods:[
@@ -244,7 +250,7 @@ var PLAN = [
    mob("Mobilidade", "Mobilidade leve · 10 min", [["Gato e camelo","2×10"],["Rotação de quadril 90/90","2×8/"],["Rotação torácica no solo","2×10/"],["Alongamento do flexor de quadril","2×30 seg/"]]),
    CORE_C]}
  ]},
- {n:4, c:"#fb923c", title:"Costas · Bíceps · Antebraço", meta:"Corrida 45 min · Noite 65 min", periods:[
+ {n:4, c:"#fb923c", title:"Costas · Bíceps · Antebraço", meta:"Corrida 45 min · Noite 70 min", periods:[
   {name:"CORRIDA", label:"Corrida", run:true, what:"Corrida longa da semana: a perna está descansada depois da terça. Cuidado com o calcanhar e mobilidade de coluna.", blocks:[
    {tag:"Corrida", kind:"cardio", run:"C", title:"Corrida", rest:"", items:[["",""]]},
    POS_RUN,
@@ -255,31 +261,33 @@ var PLAN = [
    {tag:"Exercício", kind:"work", title:"Remada baixa pegada aberta", rest:"Descanso: 90 seg", items:[["Remada baixa pegada aberta (barra reta longa)","4×10"]], note:"Abre a parte de cima das costas: trapézio, ombro de trás e lateral. Puxe a barra na direção do peito, com os cotovelos abertos, e segure 1 seg apertando as escápulas."},
    {tag:"Exercício", kind:"work", title:"Remada unilateral com halter", rest:"Descanso: 60 seg", items:[["Remada unilateral com halter","3×10 cada lado"]], note:"Trabalha o dorsal, a largura do V. Puxe o halter em direção ao quadril, com o cotovelo colado ao corpo, e desça alongando."},
    par("Largura das costas e ombro de trás", [["Pulldown de braço reto na polia","3×12"],["Crucifixo inverso","3×15"]], 45, "O pulldown de braço reto trabalha só o dorsal. Sem balançar o corpo."),
-   par("Bíceps", [["Rosca direta barra W","3×8"],["Rosca Scott","3×10"]], 60, "Na Scott, desça devagar até quase esticar o braço. Na última série da W, reduza uns 30% do peso e continue até não conseguir mais."),
+   par("Bíceps", [["Rosca direta barra W","3×8"],["Rosca Scott","3×10"]], 45, "Na Scott, desça devagar até quase esticar o braço. Na última série da W, reduza uns 30% do peso e continue até não conseguir mais."),
    par("Braço e antebraço", [["Rosca martelo","3×12"],["Rosca inversa (pegada por cima)","3×12"]], 45, "A martelo e a inversa engrossam o braço por fora e o antebraço."),
+   FIN_QUA,
    CORE_A]}
  ]},
- {n:5, c:"#2dd4bf", title:"Pernas · Posterior e Glúteo", meta:"Manhã 38 min · Noite 60 min", periods:[
+ {n:5, c:"#2dd4bf", title:"Pernas · Posterior e Glúteo", meta:"Manhã 38 min · Noite 55 min", periods:[
   {name:"☀ MANHÃ", what:"30 min de esteira inclinada em ritmo de conversa e 8 min de mobilidade de quadril.", blocks:[z2("Esteira inclinada",30,N_ESTEIRA), MOB_QUADRIL]},
   {name:"🌙 NOITE", what:"Musculação de posterior de coxa e glúteo, com mais quadríceps no hack e um bloco rápido de braços e ombro.", blocks:[
    LOW_WARM(["Ponte de glúteo","2×15"]),
    principal("Stiff", [["Stiff com barra","5×6"]], "Faça 2 séries leves antes. Termine cada série com 1 repetição sobrando. Mantenha a coluna reta e desça contando 3 segundos."),
    piramide("Hack squat ou agachamento frontal", [["Hack squat ou agachamento frontal","12 · 10 · 8"]], "Segunda vez na semana que o quadríceps trabalha com carga alta. A cada série, suba o peso."),
    par("Posterior e glúteo", [["Cadeira flexora","3×12"],["Elevação de quadril (barra ou máquina)","3×8"]], 60, "Na elevação de quadril, segure 2 seg no topo."),
-   par("Abdutora e panturrilha", [["Cadeira abdutora inclinada","3×12-10-8"],["Panturrilha sentado","3×20"]], 60, "Na abdutora, aumente o peso a cada faixa. As 3 faixas formam 1 série."),
+   {tag:"Exercício", kind:"work", title:"Panturrilha sentado", rest:"Descanso: 45 seg", items:[["Panturrilha sentado","3×20"]], note:"Desça devagar e segure 1 seg embaixo. Ajuda a proteger o pé para a corrida."},
    trio("Tríceps, ombro e bíceps", [["Tríceps francês com halter","3×12"],["Elevação lateral na polia","3×15"],["Rosca alternada com halteres","3×10/"]], 45, "Segundo estímulo da semana para tríceps, ombro lateral e bíceps. No tríceps, o braço fica acima da cabeça."),
    CORE_C]}
  ]},
- {n:6, c:"#a78bfa", title:"Ombro · Trapézio", meta:"Corrida 35 min · Noite 70 min", periods:[
+ {n:6, c:"#a78bfa", title:"Ombro · Tríceps", meta:"Corrida 35 min · Noite 75 min", periods:[
   {name:"CORRIDA", label:"Corrida", run:true, what:"Corrida leve: a posterior ainda está cansada da quinta. Mobilidade de ombro no fim.", blocks:[{tag:"Corrida", kind:"cardio", run:"B", title:"Corrida", rest:"", items:[["",""]]}, POS_RUN, MOB_OMBRO]},
   {name:"🌙 NOITE", what:"Dia do ombro completo. Inclui o peito e as costas pela segunda vez na semana.", blocks:[
    UP_WARM,
    principal("Desenvolvimento com halteres sentado", [["Desenvolvimento com halteres sentado","5×6"]]),
    piramide("Supino inclinado com halteres", [["Supino inclinado com halteres","12 · 10 · 8"]], "Segunda vez na semana que o peito trabalha. A cada série, suba o peso e faça menos repetições."),
-   trio("Ombro lateral em 3 ângulos", [["Elevação lateral de pé com halteres (peso alto)","3×12"],["Elevação lateral na polia, por trás do corpo","3×15/"],["Elevação lateral unilateral, tronco inclinado e apoiado","3×12/"]], 60, "Na última rodada, reduza uns 30% do peso no primeiro exercício e continue até não conseguir mais. Não balance o corpo."),
+   trio("Ombro lateral em 3 ângulos", [["Elevação lateral de pé com halteres (peso alto)","3×12"],["Elevação lateral na polia, por trás do corpo","3×15/"],["Elevação lateral unilateral, tronco inclinado e apoiado","3×12/"]], 45, "Na última rodada, reduza uns 30% do peso no primeiro exercício e continue até não conseguir mais. Não balance o corpo."),
    par("Peito e costas", [["Voador (peck deck) com banco alto","3×15"],["Puxador alto pegada fechada","3×12"]], 45, "Um exercício de empurrar e um de puxar: um músculo descansa enquanto o outro trabalha."),
    par("Costas e ombro de trás", [["Remada cavalinho","3×10"],["Crucifixo inverso","3×15"]], 45, "Segunda vez na semana que as costas trabalham. Com o peito apoiado, a lombar descansa."),
-   par("Ombro de trás e trapézio", [["Face pull na polia","3×15"],["Encolhimento com halteres","3×15"]], 45),
+   par("Ombro de trás e tríceps", [["Face pull na polia","3×15"],["Tríceps na corda acima da cabeça","3×12"]], 45, "O tríceps com o braço acima da cabeça foi o que mais cresceu nos estudos. O tríceps é a maior parte do braço."),
+   FIN_SEX,
    CORE_B]}
  ]},
  {n:7, c:"#f472b6", title:"Cindy", meta:"Manhã 35 min · Noite 35 min", periods:[
@@ -295,7 +303,7 @@ var PLAN = [
 
 
 
-var GUIA = [["Como funciona", ["<b>Cardio todos os dias, sem exceção:</b> 30 min no mínimo. Nos dias de corrida, a corrida conta como o cardio. Nos outros dias, esteira leve, caminhada inclinada ou escada.", "<b>Água:</b> 3,5 a 4 litros nos dias de treino e cerca de 3 litros na terça. Leve uma garrafa de 1 litro e encha de novo ao longo do dia. A urina deve ficar amarelo-clara. Não passe de 1 litro por hora.", "<b>Core todos os dias, em rodízio:</b> A com carga no domingo e na quarta, B parte de baixo e lateral na segunda e na sexta, C leve na terça, quinta e sábado. Sempre no fim do treino.", "<b>Domingo, segunda, quarta, quinta e sexta:</b> de manhã, corrida ou cardio e mobilidade. À noite, musculação, de 50 a 70 min.", "<b>Cada grupo é treinado 2 vezes ou mais por semana:</b> peito, costas, ombro, tríceps, bíceps, quadríceps e posterior. Peito e costas têm o mesmo volume, e o ombro lateral tem o maior volume do treino, para abrir o V.", "<b>Terça</b> é sem musculação e sem corrida: só caminhada leve, mobilidade e core. No <b>sábado</b>, esteira leve de manhã e, à noite, só o Cindy.", "São 7 dias em sequência, sem dia fixo. Perdeu um dia, siga do próximo.", "<b>Exercício principal:</b> faça 2 séries leves antes e depois as séries com carga alta, sempre terminando com 1 repetição sobrando. Descanse de 2 a 3 min.", "<b>Em dieta, a carga manda:</b> o que segura o músculo é manter o peso dos exercícios principais. Se a carga cair em 2 treinos seguidos, corte primeiro uma série dos blocos de exercícios seguidos, nunca o principal.", "<b>Pirâmide:</b> a cada série, suba o peso e faça menos repetições.", "<b>2 ou 3 exercícios seguidos:</b> faça um logo depois do outro e só descanse no fim.", "<b>Execução:</b> desça devagar, contando 3 segundos, nos supinos, puxadas e agachamentos. Nas elevações laterais e na extensora, segure 1 a 2 segundos no topo.", "<b>Última série com peso reduzido:</b> onde estiver marcado, tire uns 30% do peso e continue até não conseguir mais.", "<b>Zona 2</b> é o ritmo em que você consegue conversar.", "<b>Corrida na segunda, quarta, sexta e domingo:</b> segunda curta, quarta longa, sexta e domingo leves, domingo na rua. Siga a aba Corrida, de forma gradual por causa do esporão. Se o calcanhar doer mais de 2 em 10 ao acordar, a corrida do dia vira caminhada."]], ["Toda semana", ["Pese em jejum, no mesmo dia e horário, e meça a cintura. Lance cada bioimpedância na aba Corpo. Se a massa magra cair mais de 1 kg entre dois retornos, avise a Ana.", "Nos exercícios principais, suba a carga quando fizer todas as repetições com boa técnica. Nos demais, suba carga ou repetições.", "Siga a dieta montada pela Ana Belissa. É ela que define a perda de gordura junto com o treino.", "Anote a carga de cada exercício no campo \"kg\" (o app guarda a última), os rounds do Cindy e o tempo das corridas. É assim que você vê força e fôlego melhorando.", "Durma 7 a 8 horas e beba cerca de 3 L de água por dia.", "Se a cintura não baixar em 2 semanas, ajuste a dieta primeiro, antes de mexer no treino.", "No sábado, depois do Cindy, abra a aba Semana e toque em \"Começar nova semana\" para zerar os checks."]]];
+var GUIA = [["Como funciona", ["<b>Cardio todos os dias, sem exceção:</b> 30 min no mínimo. Nos dias de corrida, a corrida conta como o cardio. Nos outros dias, esteira leve, caminhada inclinada ou escada.", "<b>Água:</b> 3,5 a 4 litros nos dias de treino e cerca de 3 litros na terça. Leve uma garrafa de 1 litro e encha de novo ao longo do dia. A urina deve ficar amarelo-clara. Não passe de 1 litro por hora.", "<b>Fechamento híbrido:</b> domingo, quarta e sexta, 8 min no fim da musculação, antes do core. Swing, farmer walk e battle rope: gasta energia e trabalha o corpo inteiro sem castigar as pernas.", "<b>Descanso curto nos blocos seguidos:</b> 45 seg. Os exercícios principais continuam pesados e com descanso longo, porque é a carga deles que segura o músculo na dieta.", "<b>Passos:</b> de 8 a 10 mil por dia, contando o pedal até a academia. É o gasto que menos cansa.", "<b>Core todos os dias, em rodízio:</b> A com carga no domingo e na quarta, B parte de baixo e lateral na segunda e na sexta, C leve na terça, quinta e sábado. Sempre no fim do treino.", "<b>Domingo, segunda, quarta, quinta e sexta:</b> de manhã, corrida ou cardio e mobilidade. À noite, musculação, de 50 a 70 min.", "<b>Cada grupo é treinado 2 vezes ou mais por semana:</b> peito, costas, ombro, tríceps, bíceps, quadríceps e posterior. Peito e costas têm o mesmo volume, e o ombro lateral tem o maior volume do treino, para abrir o V.", "<b>Terça</b> é sem musculação e sem corrida: só caminhada leve, mobilidade e core. No <b>sábado</b>, esteira leve de manhã e, à noite, só o Cindy.", "São 7 dias em sequência, sem dia fixo. Perdeu um dia, siga do próximo.", "<b>Exercício principal:</b> faça 2 séries leves antes e depois as séries com carga alta, sempre terminando com 1 repetição sobrando. Descanse de 2 a 3 min.", "<b>Em dieta, a carga manda:</b> o que segura o músculo é manter o peso dos exercícios principais. Se a carga cair em 2 treinos seguidos, corte primeiro uma série dos blocos de exercícios seguidos, nunca o principal.", "<b>Pirâmide:</b> a cada série, suba o peso e faça menos repetições.", "<b>2 ou 3 exercícios seguidos:</b> faça um logo depois do outro e só descanse no fim.", "<b>Execução:</b> desça devagar, contando 3 segundos, nos supinos, puxadas e agachamentos. Nas elevações laterais e na extensora, segure 1 a 2 segundos no topo.", "<b>Última série com peso reduzido:</b> onde estiver marcado, tire uns 30% do peso e continue até não conseguir mais.", "<b>Zona 2</b> é o ritmo em que você consegue conversar.", "<b>Corrida na segunda, quarta, sexta e domingo:</b> segunda curta, quarta longa, sexta e domingo leves, domingo na rua. Siga a aba Corrida, de forma gradual por causa do esporão. Se o calcanhar doer mais de 2 em 10 ao acordar, a corrida do dia vira caminhada."]], ["Toda semana", ["Pese em jejum, no mesmo dia e horário, e meça a cintura. Lance cada bioimpedância na aba Corpo. Se a massa magra cair mais de 1 kg entre dois retornos, avise a Ana.", "Nos exercícios principais, suba a carga quando fizer todas as repetições com boa técnica. Nos demais, suba carga ou repetições.", "Siga a dieta montada pela Ana Belissa. É ela que define a perda de gordura junto com o treino.", "Anote a carga de cada exercício no campo \"kg\" (o app guarda a última), os rounds do Cindy e o tempo das corridas. É assim que você vê força e fôlego melhorando.", "Durma 7 a 8 horas e beba cerca de 3 L de água por dia.", "Se a cintura não baixar em 2 semanas, ajuste a dieta primeiro, antes de mexer no treino.", "No sábado, depois do Cindy, abra a aba Semana e toque em \"Começar nova semana\" para zerar os checks."]]];
 var IC = {
  check:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
  play:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',

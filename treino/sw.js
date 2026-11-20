@@ -1,5 +1,5 @@
 // Muda a versão a cada atualização do treino para o celular baixar a nova.
-const VERSION = "treino-alex-v3";
+const VERSION = "treino-alex-v4";
 const FILES = ["./", "index.html", "manifest.json", "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
